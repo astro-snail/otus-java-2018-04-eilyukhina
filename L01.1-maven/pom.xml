@@ -15,6 +15,7 @@
       	<maven.compiler.source>1.8</maven.compiler.source>
       	<maven.compiler.target>1.8</maven.compiler.target>
       	<org.apache.commons.version>4.1</org.apache.commons.version>
+      	<net.sf.proguard.version>5.3.3</net.sf.proguard.version>
     </properties>
     
   	<dependencies>
@@ -28,15 +29,6 @@
  	<build>
  		<finalName>${project.name}</finalName>
  		<plugins>
-
-<!-- 		According to the Maven JAR Plugin documentation (https://maven.apache.org/plugins/maven-jar-plugin/usage.html)
-     		"Usually there is no need to mentioned the 'maven-jar-plugin' explicit cause it's bound to the Maven Build Life Cycle." -->
-<!-- 		<plugin>
-    			<groupId>org.apache.maven.plugins</groupId>
-    			<artifactId>maven-jar-plugin</artifactId>
-    			<version>3.0.2</version>
-           </plugin> -->
-
             <plugin>
             	<groupId>org.apache.maven.plugins</groupId>
  		        <artifactId>maven-assembly-plugin</artifactId>
@@ -54,15 +46,44 @@
         		</configuration>
         		<executions>
           			<execution>
-            			<id>make-assembly</id> <!-- this is used for inheritance merges -->
-            			<phase>package</phase> <!-- bind to the packaging phase -->
+            			<id>make-assembly</id>
+            			<phase>package</phase>
             			<goals>
               				<goal>single</goal>
             			</goals>
           			</execution>
         		</executions>
         	</plugin>
-        		
+        	<plugin>
+                <groupId>com.github.wvengen</groupId>
+                <artifactId>proguard-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                        	<goal>proguard</goal>
+                        </goals>
+                        <configuration>
+                            <proguardVersion>${net.sf.proguard.version}</proguardVersion>
+                            <options>
+                                <option>-allowaccessmodification</option>
+                                <option>-keep class ru.otus.l011.Main { public static void main(java.lang.String[]); }</option>
+                            </options>
+                            <libs>
+                                <lib>${java.home}/lib/rt.jar</lib>
+                            </libs>
+                            <dependencies>
+                                <dependency>
+                                    <groupId>net.sf.proguard</groupId>
+                                    <artifactId>proguard-base</artifactId>
+                                    <version>${net.sf.proguard.version}</version>
+                                    <scope>runtime</scope>
+                                </dependency>
+                            </dependencies>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>        		
          </plugins>
 	</build>    
 </project>
