@@ -24,7 +24,7 @@
   			<artifactId>commons-collections4</artifactId>
   			<version>${org.apache.commons.version}</version>
   		</dependency>
-  	</dependencies>
+    </dependencies>
   
  	<build>
  		<finalName>${project.name}</finalName>
@@ -72,17 +72,17 @@
                             <libs>
                                 <lib>${java.home}/lib/rt.jar</lib>
                             </libs>
-                            <dependencies>
-                                <dependency>
-                                    <groupId>net.sf.proguard</groupId>
-                                    <artifactId>proguard-base</artifactId>
-                                    <version>${net.sf.proguard.version}</version>
-                                    <scope>runtime</scope>
-                                </dependency>
-                            </dependencies>
                         </configuration>
                     </execution>
                 </executions>
+                <dependencies>
+			        <dependency>
+            			<groupId>net.sf.proguard</groupId>
+            			<artifactId>proguard-base</artifactId>
+            			<version>${net.sf.proguard.version}</version>
+            			<scope>runtime</scope>
+        			</dependency>
+    			</dependencies>
             </plugin>        		
          </plugins>
 	</build>    
