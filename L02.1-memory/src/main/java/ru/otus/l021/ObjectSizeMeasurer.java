@@ -1,35 +1,36 @@
 package ru.otus.l021;
 
+import java.util.function.Supplier;
+
 public class ObjectSizeMeasurer {
 	
 	private static final long SLEEP_INTERVAL = 1_000;
 	private static final int SAMPLE_SIZE = 1_000_000;
 
-	public long getObjectSize(ObjectCreator obj) {
+	public long getObjectSize(Supplier<?> obj) {
 		
-		clearMemory();
+		Object[] tempArray = new Object[SAMPLE_SIZE];
 		
 	    long startMemory = getMemoryUsed();
 
-		Object[] tempArray = new Object[SAMPLE_SIZE];
-		
 		for (int i = 0; i < tempArray.length; i++) {
-			tempArray[i] = obj.create();
+			tempArray[i] = obj.get();
 		}
-		
+
 		long endMemory = getMemoryUsed();
 		
-		clearMemory();
+		System.out.println("Array of size " + tempArray.length + " created");
 		
 		return (endMemory - startMemory) / SAMPLE_SIZE; 
 	}
 	
 	private long getMemoryUsed() {
 		Runtime runtime = Runtime.getRuntime();
+		clearMemory();
 		return runtime.totalMemory() - runtime.freeMemory();
 	}
 	
-	private void clearMemory() {
+	public void clearMemory() {
 		try {
 			System.gc();
 			Thread.sleep(SLEEP_INTERVAL);

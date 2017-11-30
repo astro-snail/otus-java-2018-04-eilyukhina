@@ -5,16 +5,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- *  VM options -Xmx512m -Xms512m -XX:-UseCompressedOops
+ *  VM options -Xmx512m -Xms512m -XX:+UseCompressedOops
  */
 public class Main {
 
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(String[] args) {
 
 		System.out.println("pid: " + ManagementFactory.getRuntimeMXBean().getName());
 
 		ObjectSizeMeasurer measurer = new ObjectSizeMeasurer();
+        
+		// For some reason without clearing memory up front the first measurement is always lower that it should be.
+		measurer.clearMemory(); 
 
+		System.out.println("Size of null: " + measurer.getObjectSize(() -> null));
+		System.out.println("Size of Object: " + measurer.getObjectSize(() -> new Object()));
 		System.out.println("Size of Integer: " + measurer.getObjectSize(() -> new Integer(5)));
 		System.out.println("Size of Long: " + measurer.getObjectSize(() -> new Long(5L)));
 		System.out.println("Size of Float: " + measurer.getObjectSize(() -> new Float(5.0f)));
