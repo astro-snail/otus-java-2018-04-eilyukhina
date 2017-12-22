@@ -67,7 +67,7 @@ public class MyArrayList<E> implements List<E> {
 
 	@Override
 	public Iterator<E> iterator() {
-		return new MyIterator();
+		return new MyListIterator();
 	}
 
 	@Override
@@ -232,12 +232,14 @@ public class MyArrayList<E> implements List<E> {
 		size = 0;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public E get(int index) {
 		checkIndex(index);
 		return (E) elements[index];
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public E set(int index, E element) {
 		checkIndex(index);
@@ -257,6 +259,7 @@ public class MyArrayList<E> implements List<E> {
 		size++;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public E remove(int index) {
 		checkIndex(index);
@@ -312,20 +315,25 @@ public class MyArrayList<E> implements List<E> {
 		throw new UnsupportedOperationException("subList");
 	}
 
-	private class MyIterator implements Iterator<E> {
+	private class MyListIterator implements ListIterator<E> {
 		
 		int cursor;
 		int lastRet = -1;
 		
-		MyIterator() {
+		MyListIterator() {
 			
 		}
 
+		MyListIterator(int index) {
+			cursor = index;
+		}
+		
 		@Override
 		public boolean hasNext() {
 			return cursor != size;
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public E next() {
 			int i = cursor;
@@ -347,20 +355,13 @@ public class MyArrayList<E> implements List<E> {
 			cursor = lastRet;
 			lastRet = -1;
 		}
-	}
-	
-	private class MyListIterator extends MyIterator implements ListIterator<E> {
 		
-		MyListIterator(int index) {
-			super();
-			cursor = index;
-		}
-
 		@Override
 		public boolean hasPrevious() {
 			return cursor != 0;
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public E previous() {
 			int i = cursor - 1;
