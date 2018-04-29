@@ -53,8 +53,7 @@ public class StringTutor  {
 			return false;
 		}
 			
-		char lastChar = greeting.charAt(greeting.length() - 1);
-		if (lastChar != '!') {
+		if (!greeting.endsWith("!")) {
 			return false;
 		}
 		
