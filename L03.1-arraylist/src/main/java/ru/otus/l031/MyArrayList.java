@@ -309,10 +309,34 @@ public class MyArrayList<E> implements List<E> {
 	public ListIterator<E> listIterator(int index) {
 		return new MyListIterator(index);
 	}
+	
+	static void checkIndexRange(int fromIndex, int toIndex, int size) {
+		if (fromIndex < 0)
+            throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);
+        if (toIndex > size)
+            throw new IndexOutOfBoundsException("toIndex = " + toIndex);
+        if (fromIndex > toIndex)
+            throw new IllegalArgumentException("fromIndex(" + fromIndex + ") > toIndex(" + toIndex + ")");
+	}
 
 	@Override
 	public List<E> subList(int fromIndex, int toIndex) {
-		throw new UnsupportedOperationException("subList");
+		checkIndexRange(fromIndex, toIndex, size);
+		return new MySubList(this, fromIndex, toIndex);
+		//throw new UnsupportedOperationException("subList");
+	}
+	
+	private class MySubList extends MyArrayList<E> {
+		private final List<E> parent;
+		private final int fromIndex;
+		private final int toIndex;
+		
+		MySubList(MyArrayList<E> parent, int fromIndex, int toIndex) {
+			this.parent = parent;
+			this.fromIndex = fromIndex;
+			this.toIndex = toIndex;
+		}
+		
 	}
 
 	private class MyListIterator implements ListIterator<E> {

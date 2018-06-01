@@ -203,9 +203,18 @@ public class MyArrayListTest {
 		assertTrue(iterator.hasNext());
 	}
 
-	@Test(expected = UnsupportedOperationException.class)
+	@Test
 	public void testSubList() {
-		myList.subList(0, 2);
+		assertNotNull(myList.subList(0, myList.size()));
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void testSubListInvalidRange() {
+		myList.subList(myList.size(), 0);
+	}
+	
+	@Test(expected = IndexOutOfBoundsException.class)
+	public void testSubListInvalidIndex() {
+		myList.subList(-1, myList.size());
+	}
 }
