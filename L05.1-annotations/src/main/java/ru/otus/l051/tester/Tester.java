@@ -30,7 +30,8 @@ public class Tester {
 		System.out.println("Class: " + testClass.getTestClass().getName());
 		System.out.println("Number of test cases: " + testCases.size());
 		
-		for (TestCase testCase : testCases) {		
+		for (TestCase testCase : testCases) {
+			
 			System.out.println("Test case: " + ++count);
 			System.out.println("Method: " + testCase.getTestMethod().getName());
 			
