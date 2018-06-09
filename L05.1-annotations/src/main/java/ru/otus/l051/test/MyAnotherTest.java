@@ -15,12 +15,12 @@ public class MyAnotherTest {
 	}
 	
 	@Test (expected = NullPointerException.class)
-	public void testSomething() {
+	public void testShouldFail() {
 		System.out.println(getClass().getName() + ' ' + Thread.currentThread().getStackTrace()[1].getMethodName());
 	}
 	
 	@Test
-	public void testSomethingElse() {
+	public void testShouldPass() {
 		System.out.println(getClass().getName() + ' ' + Thread.currentThread().getStackTrace()[1].getMethodName());
 	}
 

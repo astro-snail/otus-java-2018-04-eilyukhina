@@ -1,9 +1,6 @@
 package ru.otus.l051.tester;
 
 import java.io.File;
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
@@ -13,69 +10,35 @@ import ru.otus.l051.annotations.*;
 
 public class Tester {
 	
-	private Class<?> testClass;
-	private List<Method> methodsBefore = new ArrayList<>();
-	private List<Method> methodsAfter = new ArrayList<>();
-	private List<Method> methodsTest = new ArrayList<>();
+	private final TestClass testClass;
+	private List<TestCase> testCases = new ArrayList<>();
 	
 	private Tester(Class<?> testClass) {
-		this.testClass = testClass;
-		findMethodsToRun();
+		this.testClass = new TestClass(testClass);
+		createTestCases();
 	}
 	
-	private void invokeInstanceMethod(Object obj, Method method) throws IllegalAccessException, InvocationTargetException {
-		Class<?>[] paramTypes = method.getParameterTypes();
-		Object[] params = new Object[paramTypes.length];
-		
-		method.setAccessible(true);
-		method.invoke(obj, params);
-	}
-	
-	private void findMethodsToRun() {
-		
-		Method[] methods = testClass.getDeclaredMethods();
-				
-		for (Method method : methods) {
-			
-			Annotation[] annotations = method.getAnnotations();
-			
-			for (Annotation annotation : annotations) {
-				if (annotation.annotationType() == Before.class) { 
-					methodsBefore.add(method);
-				} 
-				if (annotation.annotationType() == Test.class) { 
-					methodsTest.add(method);
-				} 
-				if (annotation.annotationType() == After.class) { 
-					methodsAfter.add(method);
-				} 
-			}
+	private void createTestCases() {
+		for (Method testMethod : testClass.getAnnotatedMethods(Test.class)) {
+			testCases.add(new TestCase(testClass, testMethod));
 		}
 	}
 	
 	private void runTests() {
+		int count = 0;
 		
-		Object obj = null;
+		System.out.println("Class: " + testClass.getTestClass().getName());
+		System.out.println("Number of test cases: " + testCases.size());
 		
-		try {
-			obj = testClass.newInstance();
-				
-			for (Method method : methodsTest) {
-				for (Method methodBefore : methodsBefore) {
-					invokeInstanceMethod(obj, methodBefore);
-				}
-				invokeInstanceMethod(obj, method);
-				for (Method methodAfter : methodsAfter) {
-					invokeInstanceMethod(obj, methodAfter);
-				}
-			}	
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		}
+		for (TestCase testCase : testCases) {		
+			System.out.println("Test case: " + ++count);
+			System.out.println("Method: " + testCase.getTestMethod().getName());
+			
+			testCase.doTest();
+            
+			System.out.println(testCase.getTestResult());
+			System.out.println();
+		}	
 	}
 	
 	public static void runTestsForClass(String className) throws ClassNotFoundException {
@@ -83,13 +46,13 @@ public class Tester {
 		tester.runTests();		
 	}
 	
-	public static void runTestsForPackage(String packageName) throws IOException, ClassNotFoundException {
-		for (Class<?> classUnderTest : getClassesInPackage(packageName)) {
-			runTestsForClass(classUnderTest.getName());
+	public static void runTestsForPackage(String packageName) throws ClassNotFoundException {
+		for (String className : getClassesInPackage(packageName)) {
+			runTestsForClass(className);
 		}
 	}
 	
-	private static List<Class<?>> getClassesInPackage(String packageName) throws ClassNotFoundException, IOException {
+	private static List<String> getClassesInPackage(String packageName) {
 		/**
 		 * Credit: https://dzone.com/articles/get-all-classes-within-package
 		 */
@@ -102,26 +65,27 @@ public class Tester {
 		return findClassesInDirectory(directory, packageName);
 	}
 	
-	private static List<Class<?>> findClassesInDirectory(File directory, String packageName) throws ClassNotFoundException {
+	private static List<String> findClassesInDirectory(File directory, String packageName) {
 		/**
 		 * Credit: https://dzone.com/articles/get-all-classes-within-package
 		 */
-		List<Class<?>> classes = new ArrayList<>();
+		List<String> classNames = new ArrayList<>();
 		
 		if (!directory.exists()) {
-			return classes;
+			return classNames;
 		}
 		
 		File[] files = directory.listFiles();
 		
 		for (File file : files) {
 			if (file.isDirectory()) {
-				classes.addAll(findClassesInDirectory(file, packageName + '.' + file.getName()));
+				classNames.addAll(findClassesInDirectory(file, packageName + '.' + file.getName()));
 			} else if (file.getName().endsWith(".class")){
-				classes.add(Class.forName(packageName + '.' + file.getName().substring(0, file.getName().lastIndexOf('.'))));
+				String className = packageName + '.' + file.getName().substring(0, file.getName().lastIndexOf('.'));
+				classNames.add(className);
 			}
 		}
 		
-		return classes;
+		return classNames;
 	}
 }
