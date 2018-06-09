@@ -50,7 +50,7 @@ public class TestCase {
 		Test annotation = testMethod.getAnnotation(Test.class);
 		
 		if (annotation.expected() == Test.None.class && targetException != null) {
-			throw new ExpectedExceptionError("No exception was expected but " + targetException.getClass().getName() + " was raised");
+			throw targetException;
 		}
 		
 		if (annotation.expected() != Test.None.class) {

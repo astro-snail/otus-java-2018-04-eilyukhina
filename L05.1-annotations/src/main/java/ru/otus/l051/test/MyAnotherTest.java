@@ -1,6 +1,7 @@
 package ru.otus.l051.test;
 
 import ru.otus.l051.annotations.*;
+import static ru.otus.l051.tester.Assert.*;
 
 public class MyAnotherTest {
 	
@@ -22,6 +23,7 @@ public class MyAnotherTest {
 	@Test
 	public void testShouldPass() {
 		System.out.println(getClass().getName() + ' ' + Thread.currentThread().getStackTrace()[1].getMethodName());
+		assertEquals(null, null);
 	}
 
 }

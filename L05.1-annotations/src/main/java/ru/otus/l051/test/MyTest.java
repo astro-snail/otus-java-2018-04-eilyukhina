@@ -1,6 +1,7 @@
 package ru.otus.l051.test;
 
 import ru.otus.l051.annotations.*;
+import static ru.otus.l051.tester.Assert.*;
 
 public class MyTest {
 	
@@ -17,7 +18,7 @@ public class MyTest {
 	@Test
 	public void testShouldFail() {
 		System.out.println(getClass().getName() + ' ' + Thread.currentThread().getStackTrace()[1].getMethodName());
-		throw new RuntimeException("Exception in test method");
+		assertTrue(false);
 	}
 
 }

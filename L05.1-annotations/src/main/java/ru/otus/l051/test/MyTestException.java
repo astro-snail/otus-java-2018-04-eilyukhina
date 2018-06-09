@@ -1,6 +1,7 @@
 package ru.otus.l051.test;
 
 import ru.otus.l051.annotations.*;
+import static ru.otus.l051.tester.Assert.*;
 
 public class MyTestException {
 	
@@ -34,11 +35,12 @@ public class MyTestException {
 	@Test
 	public void testExceptionNotExpectedNotRaised() {
 		System.out.println(getClass().getName() + ' ' + Thread.currentThread().getStackTrace()[1].getMethodName());
+		assertTrue(true);
 	}
 
 	@Test
 	public void testExceptionNotExpectedButRaised() {
 		System.out.println(getClass().getName() + ' ' + Thread.currentThread().getStackTrace()[1].getMethodName());
-		throw new IndexOutOfBoundsException();
+		assertEquals(1, 2);
 	}
 }
