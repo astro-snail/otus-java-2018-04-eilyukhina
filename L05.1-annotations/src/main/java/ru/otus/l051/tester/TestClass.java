@@ -19,7 +19,7 @@ public class TestClass {
 		this.testClass = testClass;
 		
 		if (testClass != null && testClass.getConstructors().length > 1) {
-			throw new IllegalArgumentException("Test class can only have one constructor");
+			throw new IllegalArgumentException(testClass.getName() + ": test class can only have one constructor");
 		}
 		
 		Map<Class<? extends Annotation>, List<Method>> map = new HashMap<>();
@@ -54,6 +54,9 @@ public class TestClass {
 	}
 	
 	public List<Method> getAnnotatedMethods(Class<? extends Annotation> type) {
+		if (!annotatedMethods.containsKey(type)) {
+			return new ArrayList<Method>();
+		}
 		return annotatedMethods.get(type);
 	}
 }

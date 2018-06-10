@@ -11,6 +11,8 @@ public class Main {
 		
 			Tester.runTestsForClass("ru.otus.l051.test.MyTest");
 
+			Tester.runTestsForClass("ru.otus.l051.validations.AssertionFailedError");
+			
 		    Tester.runTestsForPackage("ru.otus.l051.test");
 		    
 		} catch (ClassNotFoundException e) {

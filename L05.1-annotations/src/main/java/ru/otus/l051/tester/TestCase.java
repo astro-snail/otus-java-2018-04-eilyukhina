@@ -35,7 +35,7 @@ public class TestCase {
 	}
 	
 	private void fail(String message) {
-		testResult = TestResult.FAILURE.getMessage() + " " + message;
+		testResult = TestResult.FAILURE.getMessage() + ": " + message;
 	}
 	
 	private static void invokeInstanceMethod(Object obj, Method method) throws Throwable {

@@ -6,6 +6,7 @@
 	<groupId>ru.otus</groupId>
 	<artifactId>L05.1-annotations</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
 	
 	<name>L05.1-annotations</name>
 	<description>Homework 5 - Annotations</description>
@@ -15,5 +16,23 @@
       	<maven.compiler.source>1.8</maven.compiler.source>
       	<maven.compiler.target>1.8</maven.compiler.target>
     </properties>
+    
+    <build>
+    	<finalName>annotations</finalName>
+    	<plugins>
+    		<plugin>
+    			<groupId>org.apache.maven.plugins</groupId>
+    			<artifactId>maven-jar-plugin</artifactId>
+    			<version>3.1.0</version>
+    			<configuration>
+    				<archive>
+    					<manifest>
+    						<mainClass>ru.otus.l051.Main</mainClass>
+    					</manifest>
+    				</archive>
+    			</configuration>
+    		</plugin>
+    	</plugins>
+    </build>
     
 </project>

@@ -13,8 +13,8 @@ public class Tester {
 	private final TestClass testClass;
 	private List<TestCase> testCases = new ArrayList<>();
 	
-	private Tester(Class<?> testClass) {
-		this.testClass = new TestClass(testClass);
+	private Tester(TestClass testClass) {
+		this.testClass = testClass;
 		createTestCases();
 	}
 	
@@ -27,8 +27,8 @@ public class Tester {
 	private void runTests() {
 		int count = 0;
 		
-		System.out.println("Class: " + testClass.getTestClass().getName());
-		System.out.println("Number of test cases: " + testCases.size());
+		System.out.printf("Class: %s%n", testClass.getTestClass().getName());
+		System.out.printf("Number of test cases: %d%n", testCases.size());
 		
 		for (TestCase testCase : testCases) {
 			
@@ -43,8 +43,14 @@ public class Tester {
 	}
 	
 	public static void runTestsForClass(String className) throws ClassNotFoundException {
-		Tester tester = new Tester(Class.forName(className));
-		tester.runTests();		
+		Class<?> theClass = Class.forName(className);
+		try {
+			TestClass testClass = new TestClass(theClass);
+			Tester tester = new Tester(testClass);
+			tester.runTests();		
+		} catch (Throwable e) {
+			System.out.println(e.getMessage());
+		}
 	}
 	
 	public static void runTestsForPackage(String packageName) throws ClassNotFoundException {
