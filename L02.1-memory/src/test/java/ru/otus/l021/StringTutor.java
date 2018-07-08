@@ -48,33 +48,35 @@ public class StringTutor  {
 	 */
 	public boolean checkGreeting(String greeting) {
 		
-		String firstWord = greeting.substring(0, greeting.indexOf(','));
-		if (!firstWord.equals("Привет")) {
-			return false;
-		}
-			
-		if (!greeting.endsWith("!")) {
-			return false;
-		}
+		return greeting.matches("^Привет, *[А-Я]{1}[А-Яа-я]{2,} +[А-Я]{1}[А-Яа-я]{2,} *!$");
 		
-		String name = greeting.substring(greeting.indexOf(',') + 1, greeting.length() - 1).trim();
-		String[] names = name.split(" ");
-		
-		if (names.length != 2) {
-			return false;
-		}
-		
-		for (int i = 0; i < names.length; i++) {
-			if (names[i].length() < 3) {
-				return false;
-			}
-			
-			if (!Character.isUpperCase(names[i].charAt(0))) {
-				return false;
-			}
-		}
-		
-		return true;
+//		String firstWord = greeting.substring(0, greeting.indexOf(','));
+//		if (!firstWord.equals("Привет")) {
+//			return false;
+//		}
+//			
+//		if (!greeting.endsWith("!")) {
+//			return false;
+//		}
+//		
+//		String name = greeting.substring(greeting.indexOf(',') + 1, greeting.length() - 1).trim();
+//		String[] names = name.split(" ");
+//		
+//		if (names.length != 2) {
+//			return false;
+//		}
+//		
+//		for (int i = 0; i < names.length; i++) {
+//			if (names[i].length() < 3) {
+//				return false;
+//			}
+//			
+//			if (!Character.isUpperCase(names[i].charAt(0))) {
+//				return false;
+//			}
+//		}
+//		
+//		return true;
 	}
 	
 	@Test
