@@ -1,20 +1,20 @@
 package ru.otus.l061.atm;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import ru.otus.l061.denomination.Denomination;
+import ru.otus.l061.denomination.DenominationComparator;
 import ru.otus.l061.dispenser.CashDispenser;
 import ru.otus.l061.dispenser.DispenseChain;
 
 public class ATM {
 	public static final int BANKNOTES_INITIAL_COUNT = 10;
 	
-	private Map<Denomination, Integer> banknotes = new HashMap<>();
-	private int balance;
+	private Map<Denomination, Integer> banknotes = new TreeMap<>(new DenominationComparator());
 	
 	public ATM() {
 		initialise();
@@ -24,16 +24,10 @@ public class ATM {
 		for (Denomination denomination : Denomination.values()) {
 			banknotes.put(denomination, BANKNOTES_INITIAL_COUNT);
 		}
-		
-		updateBalance();
-	}
-	
-	private void updateBalance() {
-		balance = calculateAmount(banknotes);
 	}
 	
 	public int getBalance() {
-		return balance;
+		return calculateAmount(banknotes);
 	}
 	
 	private DispenseChain getDispenseChain() {
@@ -41,7 +35,6 @@ public class ATM {
 				
 		List<Map.Entry<Denomination, Integer>> availableDenominations = banknotes.entrySet().stream()
 				.filter(entry -> entry.getValue() > 0)
-				.sorted((o1, o2) -> o2.getKey().getNominal() - o1.getKey().getNominal())
 				.collect(Collectors.toList());
 		
 		Iterator<Map.Entry<Denomination, Integer>> iterator = availableDenominations.iterator();
@@ -69,29 +62,28 @@ public class ATM {
 			.sum();
 	}
 	
+	private void print(Map<Denomination, Integer> banknotes) {
+		banknotes.forEach((denomination, count) -> System.out.println(denomination.getNominal() + " X " + count));
+	}
+	
 	public Map<Denomination, Integer> dispense(int amount) {
 		DispenseChain chain = getDispenseChain();
+		Map<Denomination, Integer> banknotesToDispense = new TreeMap<>(new DenominationComparator());
 				
-		if (chain == null || amount > balance || amount <= 0) {
+		if (chain == null || amount <= 0 || amount > calculateAmount(banknotes)) {
 			System.out.println("Cannot dispense this amount: " + amount);
-			return null;
-		}
+		} else {
+			chain.dispense(amount, banknotesToDispense);
 		
-		Map<Denomination, Integer> banknotesToDispense = new HashMap<>();
-		chain.dispense(amount, banknotesToDispense);
-		
-		if (amount != calculateAmount(banknotesToDispense)) {
-			System.out.println("Cannot dispense this amount: " + amount);
-			return null;
-		} 
-		
-		banknotesToDispense.forEach((denomination, count) -> banknotes.merge(denomination, count, (oldCount, newCount) -> oldCount - newCount));
-		updateBalance();
-			
-		System.out.println("Dispensed: " + amount);
-		banknotesToDispense.entrySet().stream()
-			.sorted((o1, o2) -> o2.getKey().getNominal() - o1.getKey().getNominal())
-			.forEach(entry -> System.out.println(entry.getKey().getNominal() + " X " + entry.getValue()));
+			if (amount != calculateAmount(banknotesToDispense)) {
+				System.out.println("Cannot dispense this amount: " + amount);
+			} else { 
+				banknotesToDispense.forEach((denomination, count) -> banknotes.merge(denomination, count, (oldCount, newCount) -> oldCount - newCount));
+					
+				System.out.println("Dispensed: " + amount);
+				print(banknotesToDispense);
+			}
+		}	
 		
 		return banknotesToDispense;
 	}
@@ -108,7 +100,6 @@ public class ATM {
 		}
 		
 		banknotes.merge(denomination, count, (oldCount, newCount) -> oldCount + newCount);
-		updateBalance();
 		
 		System.out.println("Accepted: " + denomination.getNominal() + " X " + count + " = " + denomination.getNominal() * count);
 	}
