@@ -1,6 +1,5 @@
 package ru.otus.l071.atm;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -10,16 +9,18 @@ import java.util.stream.Collectors;
 import ru.otus.l071.composite.Component;
 import ru.otus.l071.denomination.Denomination;
 import ru.otus.l071.denomination.DenominationComparator;
+import ru.otus.l071.department.EventType;
 import ru.otus.l071.dispenser.CashDispenser;
 import ru.otus.l071.dispenser.DispenseChain;
+import ru.otus.l071.observer.Event;
 
 public class ATM implements Component {
-	
+
 	public static final int BANKNOTES_INITIAL_COUNT = 10;
 	
 	private final int id; 
 	private Map<Denomination, Integer> banknotes = new TreeMap<>(new DenominationComparator());
-	private List<Memento> snapshots = new ArrayList<>();
+	private Memento initialState;
 	
 	public ATM(int id) {
 		this(id, BANKNOTES_INITIAL_COUNT);
@@ -42,18 +43,32 @@ public class ATM implements Component {
 	}
 	
 	@Override
+	public int hashCode() {
+		final int prime = 31;
+		return prime * 1 + id;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null || getClass() != obj.getClass())
+			return false;
+		return id == ((ATM) obj).getId();
+	}
+	
+	@Override
 	public int getBalance() {
 		return calculateAmount(banknotes);
 	}
 	
-	@Override
-	public void restore() {
-		if (!snapshots.isEmpty()) {
-			Memento snapshot = snapshots.get(0);
-			restoreState(snapshot);
-			snapshots.clear();
+	private void restore() {
+		if (initialState != null) {
+			restoreState(initialState);
 		}
 	}
+	
+	private void save() {
+		initialState = saveState();
+	}	
 	
 	private DispenseChain getDispenseChain() {
 		DispenseChain chain = null;
@@ -109,7 +124,6 @@ public class ATM implements Component {
 			throw new RuntimeException("Cannot dispense this amount: " + amount);
 		}
 
-		snapshots.add(saveState());
 		banknotesToDispense.forEach((denomination, count) -> banknotes.merge(denomination, count, (oldCount, newCount) -> oldCount - newCount));
 		print(banknotesToDispense);
 		
@@ -124,8 +138,7 @@ public class ATM implements Component {
 		if (count <= 0) {
 			throw new RuntimeException("Number of banknotes should be positive");
 		}
-		
-		snapshots.add(saveState());
+
 		banknotes.merge(denomination, count, (oldCount, newCount) -> oldCount + newCount);
 		print(denomination, count);
 	}
@@ -163,4 +176,18 @@ public class ATM implements Component {
 	public void print() {
 		System.out.println(this);
 	}
+
+	@Override
+	public void handleEvent(Event event) {
+		String e = event.getEvent();
+		
+		System.out.println("Handling event " + e);
+		
+		if (EventType.ADD.getEvent().equals(e)) { 
+			save();
+		} else if (EventType.RESTORE.getEvent().equals(e)) {
+			restore();
+		}
+	}
+	
 }

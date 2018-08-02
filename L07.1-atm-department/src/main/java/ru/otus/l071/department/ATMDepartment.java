@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.otus.l071.composite.Component;
+import ru.otus.l071.observer.Event;
 
 public class ATMDepartment implements Component {
 
@@ -21,17 +22,18 @@ public class ATMDepartment implements Component {
 	public void add(Component atm) {
 		if (!children.contains(atm)) {
 			children.add(atm);
+			atm.handleEvent(() -> EventType.ADD.getEvent());
 		}
 	}
 		
 	public void remove(Component atm) {
 		children.remove(atm);
+		atm.handleEvent(() -> EventType.REMOVE.getEvent());
 	}
 
-	@Override
 	public void restore() {
 		for (Component atm : children) {
-			atm.restore();
+			atm.handleEvent(() -> EventType.RESTORE.getEvent());
 		}
 	}
 	
@@ -57,12 +59,19 @@ public class ATMDepartment implements Component {
 		return getName();
 	}
 	
-	
+	@Override
 	public void print() {
 		System.out.println(this);
 		for (Component atm : children) {
 			atm.print();
 		}
 		System.out.println("Total balance: " + getBalance());
+	}
+
+	@Override
+	public void handleEvent(Event event) {
+		if (EventType.RESTORE.getEvent().equals(event.getEvent())) {
+			restore();
+		}
 	}
 }

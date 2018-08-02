@@ -1,10 +1,10 @@
 package ru.otus.l071.composite;
 
-public interface Component {
+import ru.otus.l071.observer.Observer;
+
+public interface Component extends Observer {
 	
 	public int getBalance();
-	
-	public void restore();
 	
 	public void print();
 
