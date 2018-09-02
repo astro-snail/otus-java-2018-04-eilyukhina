@@ -34,7 +34,7 @@
     </dependencies>
     
     <build>
-    	<finalName>annotations</finalName>
+    	<finalName>atm</finalName>
     	<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
