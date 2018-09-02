@@ -2,11 +2,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<groupId>ru.otus</groupId>
-	<artifactId>L06.1-atm</artifactId>
+	<artifactId>L07.1-atm-department</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	
-	<name>L06.1-atm</name>
-	<description>Homework 6 - ATM</description>
+	<name>L07.1-atm-department</name>
+	<description>Homework 7 - ATM Department</description>
   
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -62,7 +62,7 @@
     			<configuration>
     				<archive>
     					<manifest>
-    						<mainClass>ru.otus.l061.Main</mainClass>
+    						<mainClass>ru.otus.l071.Main</mainClass>
     					</manifest>
     				</archive>
     			</configuration>
