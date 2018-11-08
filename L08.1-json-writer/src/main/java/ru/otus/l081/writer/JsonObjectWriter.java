@@ -3,6 +3,7 @@ package ru.otus.l081.writer;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
@@ -28,11 +29,12 @@ public class JsonObjectWriter {
 	
 	private JsonValue elementToJson(Object element, Class<?> type) throws Exception {
 		if (type.isPrimitive()) {
-			return primitiveToJson(element);
+			return simpleObjectToJson(element);
 		} else if (type.isArray()) {
 			return arrayToJson(element);
 		} else if (Collection.class.isAssignableFrom(type)) {
-			return collectionToJson(element);
+			Collection<?> collection = (Collection<?>)element;
+			return arrayToJson(collection.toArray());
 		} else if (Map.class.isAssignableFrom(type)) {
 			return mapToJson(element);
 		} else {
@@ -49,10 +51,10 @@ public class JsonObjectWriter {
 			field.setAccessible(true);
 		
 			int mod = field.getModifiers();
-			if (Modifier.isStatic(mod) || Modifier.isTransient(mod)) {
-				continue;
-			}
-			objectBuilder.add(field.getName(), elementToJson(field.get(obj), field.getType()));
+			
+			if (!(Modifier.isStatic(mod) || Modifier.isTransient(mod))) {
+				objectBuilder.add(field.getName(), elementToJson(field.get(obj), field.getType()));
+			}	
 		}
 		return objectBuilder.build();
 	}
@@ -60,27 +62,15 @@ public class JsonObjectWriter {
 	private JsonArray arrayToJson(Object obj) throws Exception {
 		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
 		
-		Class<?> type = obj.getClass().getComponentType();
-		
 		int length = Array.getLength(obj);
 
 		for (int i = 0; i < length; i++) {
-			arrayBuilder.add(elementToJson(Array.get(obj, i), type));
-		}
-		return arrayBuilder.build();
-	}
-
-	private JsonArray collectionToJson(Object obj) throws Exception {
-		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-		
-		Collection<?> collection = (Collection<?>)obj;
-		
-		for (Object element : collection) {
+			Object element = Array.get(obj, i);
 			arrayBuilder.add(elementToJson(element, element.getClass()));
 		}
 		return arrayBuilder.build();
 	}
-	
+
 	private JsonObject mapToJson(Object obj) throws Exception {
 		JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
 				
@@ -93,32 +83,21 @@ public class JsonObjectWriter {
 		return objectBuilder.build();
 	}
 	
-	private JsonValue primitiveToJson(Object obj) {
-		return simpleObjectToJson(obj);
-	}
-	
 	private JsonValue simpleObjectToJson(Object obj) {
 		if (obj instanceof Number) {
-			return numberToJson((Number)obj);			
+			Number number = (Number)obj;
+			if (number instanceof Double || number instanceof Float) {
+				return Json.createValue(number.doubleValue());
+			} else if (number instanceof Long) {
+				return Json.createValue(number.longValue());
+			} else { 
+				return Json.createValue(number.intValue());
+			} 		
 		} else if (obj instanceof Boolean) {
-			return booleanToJson((Boolean)obj);
+			return obj.equals(true) ? JsonValue.TRUE : JsonValue.FALSE;
 		} else {
 			return Json.createValue(obj.toString());
 		}	
-	}
-	
-	private JsonNumber numberToJson(Number obj) {
-		if (obj instanceof Double || obj instanceof Float) {
-			return Json.createValue(obj.doubleValue());
-		} else if (obj instanceof Long) {
-			return Json.createValue(obj.longValue());
-		} else { 
-			return Json.createValue(obj.intValue());
-		} 
-	}
-	
-	private JsonValue booleanToJson(Boolean obj) {
-		return obj.equals(true) ? JsonValue.TRUE : JsonValue.FALSE;
 	}
 	
 }
