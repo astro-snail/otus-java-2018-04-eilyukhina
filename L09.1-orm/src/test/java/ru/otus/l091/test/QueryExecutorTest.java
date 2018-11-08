@@ -26,7 +26,7 @@ class QueryExecutorTest {
 
 	@AfterAll
 	static void tearDownAfterClass() throws Exception {
-		ConnectionHelper.closeConnection();
+		connection.close();
 	}
 
 	@BeforeEach

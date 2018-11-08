@@ -3,7 +3,6 @@ package ru.otus.l081.writer;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
@@ -12,7 +11,6 @@ import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
-import javax.json.JsonNumber;
 import javax.json.JsonValue;
 
 public class JsonObjectWriter {
