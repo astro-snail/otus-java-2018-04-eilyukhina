@@ -86,7 +86,7 @@ public class QueryExecutor {
     	return params;
     }
 
-	public <T extends DataSet> void save(T user) throws SQLException{
+	public <T extends DataSet> void save(T user) throws SQLException {
 		if (!exists(user)) {
 			insert(INSERT_USER, user, "name", "age");
 		} else {

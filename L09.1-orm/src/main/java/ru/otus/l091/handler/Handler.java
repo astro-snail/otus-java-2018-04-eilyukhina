@@ -23,7 +23,7 @@ public class Handler<T> implements ResultSetHandler<T> {
 		return null;
 	}
 
-	private T newInstance(Class<? extends T> type) throws SQLException{
+	private T newInstance(Class<? extends T> type) throws SQLException {
 		try {
 			return type.newInstance();
 		} catch (Exception e) {
