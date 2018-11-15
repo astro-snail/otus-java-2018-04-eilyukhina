@@ -1,11 +1,12 @@
 package ru.otus.l101.dataset;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -17,25 +18,23 @@ public class UserDataSet extends DataSet {
 	private String name;
 	private int age;
 	private AddressDataSet address;
-	private List<PhoneDataSet> phones;
+	private List<PhoneDataSet> phones = new ArrayList<>();
 
 	public UserDataSet() {
 		super();
 	}
 
-	public UserDataSet(Long id, String name, int age, AddressDataSet address, List<PhoneDataSet> phones) {
+	public UserDataSet(Long id, String name, int age) {
 		this.setId(id);
 		this.setName(name);
 		this.setAge(age);
-		this.setAddress(address);
-		this.setPhones(phones);
 	}
 	
-	public UserDataSet(String name, int age, AddressDataSet address, List<PhoneDataSet> phones) {
-		this(null, name, age, address, phones);
+	public UserDataSet(String name, int age) {
+		this(null, name, age);
 	}
-
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
+	
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
 	public AddressDataSet getAddress() {
 		return address;
 	}
@@ -45,28 +44,40 @@ public class UserDataSet extends DataSet {
 		address.setUser(this);
 	}
 
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "user_id")
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	public List<PhoneDataSet> getPhones() {
 		return phones;
 	}
 
 	public void setPhones(List<PhoneDataSet> phones) {
 		this.phones = phones;
+		for (PhoneDataSet phone : phones) {
+			phone.setUser(this);
+		}
+	}
+	
+	public void addPhone(PhoneDataSet phone) {
+		phones.add(phone);
+		phone.setUser(this);
 	}
 
+	public void removePhone(PhoneDataSet phone) {
+		phones.remove(phone);
+		phone.setUser(null);
+	}
+	
 	@Column(name = "name")
 	public String getName() {
 		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	@Column(name = "age")
 	public int getAge() {
 		return age;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public void setAge(int age) {
@@ -88,7 +99,12 @@ public class UserDataSet extends DataSet {
 			return false;
 		}
 		UserDataSet other = (UserDataSet)obj;
-		return getId() == other.getId() && name.equals(other.name) && age == other.age;
+		return getId() != null && getId().equals(other.getId());
+	}
+	
+	@Override
+	public int hashCode() {
+		return getId().intValue();
 	}
 }
 

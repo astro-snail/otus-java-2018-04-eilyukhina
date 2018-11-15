@@ -1,7 +1,6 @@
 package ru.otus.l101;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import ru.otus.l101.dataset.*;
@@ -14,27 +13,27 @@ public class Main {
 		testService(new DBServiceHibernateImpl());
 		
 		System.out.println("myORM");
-		testService(new DBServiceImpl()); 
+		testService(new DBServiceImpl());
 	}
 
 	private static void testService(DBService service) throws SQLException {
-		
-		List<PhoneDataSet> phones = new ArrayList<>();
-		phones.add(new PhoneDataSet("0147258369"));
-		phones.add(new PhoneDataSet("0123456789"));
-		
-		UserDataSet user = new UserDataSet("Johnny Johnny", 35, new AddressDataSet("My Green Street"), phones); 
+		System.out.println("Creating a user:");		
+		UserDataSet user = new UserDataSet("Johnny Johnny", 35);
+		user.setAddress(new AddressDataSet("My Green Street"));
+		user.addPhone(new PhoneDataSet("0147258369"));
+		user.addPhone(new PhoneDataSet("0123456789")); 
 		service.save(user);
 		System.out.println("User created: " + user);
 		
-		phones = new ArrayList<>();
-		phones.add(new PhoneDataSet("0147258369"));
-		phones.add(new PhoneDataSet("0123456789"));
-		
-		user = new UserDataSet("Johnny Boy", 25, new AddressDataSet("My Wide Street"), phones); 
+		System.out.println("Creating a user:");	
+		user = new UserDataSet("Johnny Boy", 25);
+		user.setAddress(new AddressDataSet("My Wide Street"));
+		user.addPhone(new PhoneDataSet("0789456123"));
+		user.addPhone(new PhoneDataSet("0369258147")); 
 		service.save(user);
 		System.out.println("User created: " + user);
 		
+		System.out.println("Loading all users:");	
 		List<UserDataSet> users = service.loadAll();
 		System.out.println("Users in DB: " + users.size());
 		
@@ -42,6 +41,7 @@ public class Main {
 			System.out.println(theUser);
 		}
 		
+		System.out.println("Deleting users:");	
 		for (UserDataSet theUser : service.loadAll()) {
 			service.delete(theUser);
 			System.out.println("User deleted: " + theUser);

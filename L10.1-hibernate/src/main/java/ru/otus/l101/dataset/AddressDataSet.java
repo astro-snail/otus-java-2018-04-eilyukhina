@@ -2,6 +2,7 @@ package ru.otus.l101.dataset;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -35,7 +36,7 @@ public class AddressDataSet extends DataSet {
 		this.street = street;
 	}
 	
-	@OneToOne
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	public UserDataSet getUser() {
 		return user;
@@ -48,5 +49,19 @@ public class AddressDataSet extends DataSet {
 	@Override
 	public String toString() {
 		return "Address ID = " + getId() + ", street = " + getStreet();
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof AddressDataSet)) {
+			return false;
+		}
+		AddressDataSet other = (AddressDataSet)obj;
+		return getId() != null && getId().equals(other.getId());
+	}
+	
+	@Override
+	public int hashCode() {
+		return getId().intValue();
 	}
 }

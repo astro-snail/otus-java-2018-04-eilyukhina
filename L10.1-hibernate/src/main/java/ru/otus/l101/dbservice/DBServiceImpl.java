@@ -25,16 +25,14 @@ public class DBServiceImpl implements DBService {
 			UserDAO userDao = new UserDAOImpl(connection);
 			userDao.save(user);
 			// Save address
-			AddressDataSet address = null;
-			if ((address = user.getAddress()) != null ) {
+			AddressDataSet address = user.getAddress();
+			if (address != null ) {
 				AddressDAO addressDao = new AddressDAOImpl(connection);
-				address.setUser(user);
 				addressDao.save(address);
 			}	
 			// Save phones
 			PhoneDAO phoneDao = new PhoneDAOImpl(connection);
 			for (PhoneDataSet phone : user.getPhones()) {
-				phone.setUser(user);
 				phoneDao.save(phone);
 			}
 			connection.commit();
@@ -49,16 +47,16 @@ public class DBServiceImpl implements DBService {
 	public void delete(UserDataSet user) throws SQLException {
 		try {
 			connection.setAutoCommit(false);
+			// Delete address
+			AddressDataSet address = user.getAddress();
+			if (address != null) {
+				AddressDAO addressDao = new AddressDAOImpl(connection);
+				addressDao.delete(address);
+			}
 			// Delete phones
 			PhoneDAO phoneDao = new PhoneDAOImpl(connection);
 			for(PhoneDataSet phone : user.getPhones()) {
 				phoneDao.delete(phone);
-			}
-			// Delete address
-			AddressDataSet address = null;
-			if ((address = user.getAddress()) != null) {
-				AddressDAO addressDao = new AddressDAOImpl(connection);
-				addressDao.delete(address);
 			}
 			// Delete user
 			UserDAO userDao = new UserDAOImpl(connection);

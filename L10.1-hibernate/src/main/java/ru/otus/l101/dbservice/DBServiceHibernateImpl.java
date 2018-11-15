@@ -29,7 +29,7 @@ public class DBServiceHibernateImpl implements DBService {
         configuration.setProperty("hibernate.connection.url", "jdbc:postgresql://localhost:5432/orm");
         configuration.setProperty("hibernate.connection.username", "postgres");
         configuration.setProperty("hibernate.connection.password", "admin");
-        //configuration.setProperty("hibernate.show_sql", "true");
+        configuration.setProperty("hibernate.show_sql", "true");
         configuration.setProperty("hibernate.hbm2ddl.auto", "create");
         configuration.setProperty("hibernate.connection.useSSL", "false");
         configuration.setProperty("hibernate.enable_lazy_load_no_trans", "true");
