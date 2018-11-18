@@ -32,18 +32,29 @@
     		<artifactId>hibernate-core</artifactId>
     		<version>${hibernate.version}</version>
 		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-engine -->
-    	<dependency>
+		
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>${junit.jupiter.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-params</artifactId>
+			<version>${junit.jupiter.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
 			<version>${junit.jupiter.version}</version>
 			<scope>test</scope>
-		</dependency>		
+		</dependency>
     </dependencies>
     
     <build>
-    	<finalName>orm-hibernate</finalName>
+    	<finalName>cache</finalName>
     	<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
