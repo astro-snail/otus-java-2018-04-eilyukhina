@@ -13,18 +13,24 @@ public class LoginServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setAttribute("message", "Please enter your user name and password:");
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/login.jsp");
 		dispatcher.forward(request, response);
 	}	
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		if (request.getParameter("username").isEmpty() || request.getParameter("password").isEmpty()) {
-			response.sendRedirect(request.getContextPath() + "/");//request.getServletPath());
+		String username = request.getParameter("username");
+		String password = request.getParameter("password");
+		
+		if (username.isEmpty() || password.isEmpty()) {
+			request.setAttribute("message", "Your username or password are incorrect. Please try again.");
+			doGet(request, response);
 		} else {
-			request.getSession().setAttribute("username", request.getParameter("username"));
-			response.sendRedirect(request.getContextPath() + "/cache-info");//request.getServletPath());
+			// User authentication should be here - just assume that it is always successful
+			
+			// Save username in session
+			request.getSession().setAttribute("username", username);
+			response.sendRedirect(request.getContextPath() + "/cache-info");
 		}
 	}	
 }

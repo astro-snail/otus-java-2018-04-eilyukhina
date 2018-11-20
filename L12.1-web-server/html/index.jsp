@@ -2,15 +2,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Index</title>
+	<meta charset="UTF-8"/>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <title>Start</title>
 </head>
 <body>
-<div class="top">
+<div>
     <img src="logo.png"/>
-    <br/>
-    <a href="login">Login</a>
-    <a href="cache-info">Admin</a>
-    <a href="timer">Timer</a>
 </div>
+<ul>
+ 	<a class="button" href="login"><li>Login</li></a>
+    <a class="button" href="cache-info"><li>Cache Info</li></a>
+</ul>    
+    
 </body>
 </html>

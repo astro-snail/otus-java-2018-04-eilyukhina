@@ -13,13 +13,14 @@
         <property name="connection.password">admin</property>
         <property name="connection.useSSL">false</property>
         <property name="show_sql">true</property>
+        <property name="format_sql">true</property>
 		<property name="hbm2ddl.auto">create</property>
 		<property name="enable_lazy_load_no_trans">true</property>
 		
 		<!-- mappings for annotated classes -->
-        <mapping class="ru.otus.l111.dataset.UserDataSet"/>
-        <mapping class="ru.otus.l111.dataset.AddressDataSet"/>
-        <mapping class="ru.otus.l111.dataset.PhoneDataSet"/>
+        <mapping class="ru.otus.l121.dataset.UserDataSet"/>
+        <mapping class="ru.otus.l121.dataset.AddressDataSet"/>
+        <mapping class="ru.otus.l121.dataset.PhoneDataSet"/>
     </session-factory>
 
 </hibernate-configuration>

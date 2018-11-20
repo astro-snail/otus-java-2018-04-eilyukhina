@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import org.apache.tomcat.util.scan.StandardJarScanner;
 import org.eclipse.jetty.apache.jsp.JettyJasperInitializer;
 import org.eclipse.jetty.jsp.JettyJspServlet;
 import org.eclipse.jetty.server.Server;
@@ -18,68 +17,55 @@ import ru.otus.l121.servlet.*;
 
 public class Main {
 	
+	private static final int PORT = 8080;
+	private static final String RESOURCE_BASE_DIR = "html";
+	
 	public static void main(String[] args) throws Exception {
-
-        /*Server server = new Server(8080);
-
-        ServletHandler handler = new ServletHandler();
-        server.setHandler(handler);
-
-        handler.addServletWithMapping(MyServlet.class, "/*");
-
-        server.start();
-
-        server.join();*/
 		
-		Server server = new Server(8080);
+		DBHelper.startDB();
+		
+		Server server = new Server(PORT);
 		
 		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-	    context.setResourceBase("html");
+	    context.setResourceBase(RESOURCE_BASE_DIR);
 	    context.setContextPath("/");
     
-	    File tempDir = new File(System.getProperty("java.io.tmpdir"));
-        File scratchDir = new File(tempDir.toString(), "embedded-jetty-jsp");
-    
-        if (!scratchDir.exists()) {
-            if (!scratchDir.mkdirs()) {
-                throw new IOException("Unable to create scratch directory: " + scratchDir);
-            }
-        }
-        context.setAttribute("javax.servlet.context.tempdir", scratchDir);
-    
-        // Set Classloader of Context to be sane (needed for JSTL)
-        // JSP requires a non-System classloader, this simply wraps the
-        // embedded System classloader in a way that makes it suitable
-        // for JSP to use
-        ClassLoader jspClassLoader = new URLClassLoader(new URL[0], Main.class.getClassLoader());
-        context.setClassLoader(jspClassLoader);
-        
-        // Manually call JettyJasperInitializer on context startup
-        context.addBean(new JspStarter(context));
-        
-        // Create / Register JSP Servlet (must be named "jsp" per spec)
-        ServletHolder holderJsp = new ServletHolder("jsp", JettyJspServlet.class);
-        holderJsp.setInitOrder(0);
-        holderJsp.setInitParameter("logVerbosityLevel", "DEBUG");
-        holderJsp.setInitParameter("fork", "false");
-        holderJsp.setInitParameter("xpoweredBy", "false");
-        holderJsp.setInitParameter("compilerTargetVM", "1.8");
-        holderJsp.setInitParameter("compilerSourceVM", "1.8");
-        holderJsp.setInitParameter("keepgenerated", "true");
-        context.addServlet(holderJsp, "*.jsp");
-        
-        //TemplateProcessor templateProcessor = new TemplateProcessor();
+	    configureJspSupport(context);
 
         context.addServlet(LoginServlet.class, "/login");
         context.addServlet(CacheInfoServlet.class, "/cache-info");
         context.addServlet(DefaultServlet.class, "/");
-        //context.addServlet(AdminServlet.class, "/admin");
-        //context.addServlet(TimerServlet.class, "/timer");
 
-        //Server server = new Server(PORT);
-        server.setHandler(context);//new HandlerList(resourceHandler, context));
+        server.setHandler(context);
         server.start();
         server.join();
+	}
+
+	private static void configureJspSupport(ServletContextHandler context) throws IOException {
+		File tempDir = new File(System.getProperty("java.io.tmpdir"));
+	    File scratchDir = new File(tempDir.toString(), "embedded-jetty-jsp");
+	
+	    if (!scratchDir.exists()) {
+	        if (!scratchDir.mkdirs()) {
+	            throw new IOException("Unable to create scratch directory: " + scratchDir);
+	        }
+	    }
+	    context.setAttribute("javax.servlet.context.tempdir", scratchDir);
+	
+	    ClassLoader jspClassLoader = new URLClassLoader(new URL[0], Main.class.getClassLoader());
+	    context.setClassLoader(jspClassLoader);
+	
+	    context.addBean(new JspStarter(context));
+	
+	    ServletHolder holderJsp = new ServletHolder("jsp", JettyJspServlet.class);
+	    holderJsp.setInitOrder(0);
+	    holderJsp.setInitParameter("logVerbosityLevel", "DEBUG");
+	    holderJsp.setInitParameter("fork", "false");
+	    holderJsp.setInitParameter("xpoweredBy", "false");
+	    holderJsp.setInitParameter("compilerTargetVM", "1.8");
+	    holderJsp.setInitParameter("compilerSourceVM", "1.8");
+	    holderJsp.setInitParameter("keepgenerated", "true");
+	    context.addServlet(holderJsp, "*.jsp");
 	}
 }
 
@@ -91,7 +77,6 @@ class JspStarter extends AbstractLifeCycle implements ServletContextHandler.Serv
     public JspStarter (ServletContextHandler context) {
         this.initializer = new JettyJasperInitializer();
         this.context = context;
-        //this.context.setAttribute("org.apache.tomcat.JarScanner", new StandardJarScanner());
     }
 
     @Override
