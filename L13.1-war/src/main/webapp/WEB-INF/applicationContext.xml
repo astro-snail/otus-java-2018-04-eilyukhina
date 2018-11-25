@@ -1,0 +1,17 @@
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="cacheConfiguration" class="ru.otus.l131.cache.CacheConfiguration">
+	</bean>
+	
+	<bean id="cache" class="ru.otus.l131.cache.CacheStore">
+		<constructor-arg ref="cacheConfiguration"></constructor-arg>
+	</bean>
+
+    <bean id="dbService" class="ru.otus.l131.dbservice.DBServiceHibernateImpl">
+       <constructor-arg ref="cache"></constructor-arg>
+    </bean>    
+
+</beans>
