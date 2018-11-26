@@ -1,5 +1,7 @@
 package ru.otus.l131;
 
+import java.sql.SQLException;
+
 import ru.otus.l131.dataset.*;
 import ru.otus.l131.dbservice.DBService;
 
@@ -15,32 +17,20 @@ public class DBHelper {
 			dbService.save(user);
 					
 			user = dbService.load(user.getId());
-					
-			//Thread.sleep(500);
 						
 			user = dbService.load(user.getId());
 					
-			//Thread.sleep(500);
-					
 			user = dbService.load(user.getId());
 					
-			//Thread.sleep(500);
-						
 			dbService.loadAddressByUserId(user.getId());
 			
-			//Thread.sleep(500);
-						
 			dbService.loadPhoneById(1L);
-			
-			//Thread.sleep(500);
 			
 			user = dbService.load(user.getId());
 			
-			//Thread.sleep(500);
-	
 			dbService.delete(user);
 						
-		} catch (Exception e) {
+		} catch (SQLException e) {
 					
 		}
 	}
