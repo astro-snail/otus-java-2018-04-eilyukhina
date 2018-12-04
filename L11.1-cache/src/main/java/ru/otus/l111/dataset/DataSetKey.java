@@ -12,7 +12,7 @@ public class DataSetKey {
 	
 	@Override
 	public int hashCode() {
-		return id.hashCode();
+		return type.hashCode() + id.hashCode();
 	}
 
 	@Override

@@ -12,6 +12,7 @@ import org.hibernate.proxy.LazyInitializer;
 
 import ru.otus.l111.cache.Cache;
 import ru.otus.l111.cache.CacheConfiguration;
+import ru.otus.l111.cache.CacheFactory;
 import ru.otus.l111.cache.Element;
 import ru.otus.l111.dao.*;
 import ru.otus.l111.dataset.*;
@@ -23,7 +24,7 @@ public class DBServiceHibernateImpl implements DBService {
 
     public DBServiceHibernateImpl() {
         sessionFactory = new Configuration().configure().buildSessionFactory();
-       	cache = new CacheConfiguration().build();
+       	cache = CacheFactory.getCache(new CacheConfiguration());
     }
 
    	@Override
