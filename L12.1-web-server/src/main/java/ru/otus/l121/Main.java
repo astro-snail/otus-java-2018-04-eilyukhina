@@ -13,6 +13,13 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.component.AbstractLifeCycle;
 
+import ru.otus.l121.cache.Cache;
+import ru.otus.l121.cache.CacheConfiguration;
+import ru.otus.l121.cache.CacheFactory;
+import ru.otus.l121.dataset.DataSet;
+import ru.otus.l121.dataset.DataSetKey;
+import ru.otus.l121.dbservice.DBService;
+import ru.otus.l121.dbservice.DBServiceHibernateImpl;
 import ru.otus.l121.servlet.*;
 
 public class Main {
@@ -22,7 +29,10 @@ public class Main {
 	
 	public static void main(String[] args) throws Exception {
 		
-		DBHelper.startDB();
+		Cache<DataSetKey, DataSet> cache = CacheFactory.getCache(new CacheConfiguration());
+		DBService dbService = new DBServiceHibernateImpl(cache);
+		
+		DBHelper.startDB(dbService);
 		
 		Server server = new Server(PORT);
 		
@@ -33,7 +43,7 @@ public class Main {
 	    configureJspSupport(context);
 
         context.addServlet(LoginServlet.class, "/login");
-        context.addServlet(CacheInfoServlet.class, "/cache-info");
+        context.addServlet(new ServletHolder(new CacheInfoServlet(cache)), "/cache-info");
         context.addServlet(DefaultServlet.class, "/");
 
         server.setHandler(context);

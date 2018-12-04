@@ -8,10 +8,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ru.otus.l121.DBHelper;
+import ru.otus.l121.cache.Cache;
+import ru.otus.l121.dataset.DataSet;
+import ru.otus.l121.dataset.DataSetKey;
 
 @SuppressWarnings("serial")
 public class CacheInfoServlet extends HttpServlet {
+	
+	private final Cache<DataSetKey, DataSet> cache;
+	
+	public CacheInfoServlet(Cache<DataSetKey, DataSet> cache) {
+		this.cache = cache;
+	}
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -19,13 +27,13 @@ public class CacheInfoServlet extends HttpServlet {
 		if (request.getSession().getAttribute("username") == null) {
 			response.sendRedirect(request.getContextPath() + "/login");
 		} else {
-			request.setAttribute("maxCapacity", DBHelper.getCache().getProperties().get("maxCapacity"));
-			request.setAttribute("lifeTime", DBHelper.getCache().getProperties().get("lifeTime"));
-			request.setAttribute("idleTime", DBHelper.getCache().getProperties().get("idleTime"));
-			request.setAttribute("isEternal", DBHelper.getCache().getProperties().get("isEternal"));
-			request.setAttribute("cacheSize", DBHelper.getCache().getSize());
-			request.setAttribute("hitCount", DBHelper.getCache().getHitCount());
-			request.setAttribute("missCount", DBHelper.getCache().getMissCount());
+			request.setAttribute("maxCapacity", cache.getProperties().get("maxCapacity"));
+			request.setAttribute("lifeTime", cache.getProperties().get("lifeTime"));
+			request.setAttribute("idleTime", cache.getProperties().get("idleTime"));
+			request.setAttribute("isEternal", cache.getProperties().get("isEternal"));
+			request.setAttribute("cacheSize", cache.getSize());
+			request.setAttribute("hitCount", cache.getHitCount());
+			request.setAttribute("missCount", cache.getMissCount());
 			
 			RequestDispatcher dispatcher = request.getRequestDispatcher("/cache-info.jsp");
 			dispatcher.forward(request, response);

@@ -2,16 +2,13 @@ package ru.otus.l121;
 
 import java.sql.SQLException;
 
-import ru.otus.l121.cache.Cache;
 import ru.otus.l121.dataset.*;
 import ru.otus.l121.dbservice.*;
 
 public class DBHelper {
 	
-	private static DBService service = new DBServiceHibernateImpl();
-	
 	// Simulates DB activity
-	public static void startDB() throws SQLException, InterruptedException {
+	public static void startDB(DBService service) throws SQLException, InterruptedException {
 				
 		new Thread(new Runnable() {
 			
@@ -51,9 +48,4 @@ public class DBHelper {
 		}).start();	
 
 	}
-	
-	public static Cache<DataSetKey, DataSet> getCache() {
-		return ((DBServiceHibernateImpl)service).getCache();
-	}
-
 }
