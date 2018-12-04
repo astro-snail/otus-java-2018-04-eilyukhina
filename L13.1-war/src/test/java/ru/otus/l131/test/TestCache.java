@@ -40,7 +40,7 @@ class TestCache {
 
 	@Test
 	void testFoundInCache() {
-		cache = new CacheConfiguration("cacheEternal.properties").build();
+		cache = CacheFactory.getCache(new CacheConfiguration("cacheEternal.properties"));
 		cache.put(new Element(new DataSetKey(userOne.getClass(), userOne.getId()), userOne));
 		
 		UserDataSet theUser = (UserDataSet)cache.get(new DataSetKey(UserDataSet.class, 1L)).getValue();
@@ -49,7 +49,7 @@ class TestCache {
 	
 	@Test
 	void testNotFoundInCache() {
-		cache = new CacheConfiguration("cacheEternal.properties").build();
+		cache = CacheFactory.getCache(new CacheConfiguration("cacheEternal.properties"));
 		cache.put(new Element(new DataSetKey(userOne.getClass(), userOne.getId()), userOne));
 
 		assertNull(cache.get(new DataSetKey(UserDataSet.class, 2L)));
@@ -57,7 +57,7 @@ class TestCache {
 	
 	@Test
 	void testMaxCapacity2() {
-		cache = new CacheConfiguration("cacheMaxCapacity2.properties").build();
+		cache = CacheFactory.getCache(new CacheConfiguration("cacheMaxCapacity2.properties"));
 		cache.put(new Element(new DataSetKey(userOne.getClass(), userOne.getId()), userOne));
 		cache.put(new Element(new DataSetKey(address.getClass(), address.getId()), address));
 		cache.put(new Element(new DataSetKey(phone.getClass(), phone.getId()), phone));
@@ -76,7 +76,7 @@ class TestCache {
 
 	@Test
 	void testLifeTime3s() throws InterruptedException {
-		cache = new CacheConfiguration("cacheLifeTime3s.properties").build();
+		cache = CacheFactory.getCache(new CacheConfiguration("cacheLifeTime3s.properties"));
 		cache.put(new Element(new DataSetKey(address.getClass(), address.getId()), address));
 		
 		Thread.sleep(1000);
@@ -93,7 +93,7 @@ class TestCache {
 	
 	@Test
 	void testIdleTime2s() throws InterruptedException {
-		cache = new CacheConfiguration("cacheIdleTime2s.properties").build();
+		cache = CacheFactory.getCache(new CacheConfiguration("cacheIdleTime2s.properties"));
 		cache.put(new Element(new DataSetKey(phone.getClass(), phone.getId()), phone));
 		
 		// Entry should be in cache

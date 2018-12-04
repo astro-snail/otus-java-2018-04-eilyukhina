@@ -8,7 +8,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import ru.otus.l131.DBHelper;
@@ -18,14 +20,18 @@ import ru.otus.l131.dbservice.DBService;
 @SuppressWarnings("serial")
 public class CacheInfoServlet extends HttpServlet {
 	
+	@Autowired
 	private DBService dbService;
+	
+	@Autowired
 	private Cache cache;
 	
 	@Override
 	public void init() throws ServletException {
-        WebApplicationContext springContext = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
+/*        WebApplicationContext springContext = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
 	    dbService = springContext.getBean("dbService", DBService.class);
-	    cache = springContext.getBean("cache", Cache.class);
+	    cache = springContext.getBean("cache", Cache.class);*/
+		SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, getServletContext());
 	}
 	
 	@Override

@@ -38,8 +38,4 @@ public class CacheConfiguration {
 	public boolean isEternal() {
 		return Boolean.parseBoolean(configuration.getProperty("isEternal", "false"));
 	}
-		
-	public Cache build() {
-		return new CacheStore(getMaxCapacity(), getLifeTime(), getIdleTime(), isEternal());
-	}
 }

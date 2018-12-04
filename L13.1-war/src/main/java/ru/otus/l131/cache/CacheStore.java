@@ -32,10 +32,6 @@ public class CacheStore implements Cache {
         this.isEternal = (lifeTime == 0 && idleTime == 0) || isEternal;
     }
     
-    public CacheStore(CacheConfiguration configuration) {
-    	this(configuration.getMaxCapacity(), configuration.getLifeTime(), configuration.getIdleTime(), configuration.isEternal());
-    }
-
 	@Override
 	public void put(Element element) {
 		Object key = element.getKey();

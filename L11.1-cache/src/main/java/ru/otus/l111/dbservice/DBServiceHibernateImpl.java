@@ -146,6 +146,7 @@ public class DBServiceHibernateImpl implements DBService {
 		cache.dispose();
 	}
 	
+	@SuppressWarnings("unchecked")
 	private <T extends DataSet> Class<T> getClassForHibernateObject(T dataSet) {
 		if (dataSet instanceof HibernateProxy) {
 		    LazyInitializer lazyInitializer = ((HibernateProxy)dataSet).getHibernateLazyInitializer();

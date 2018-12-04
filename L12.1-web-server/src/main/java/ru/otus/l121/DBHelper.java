@@ -34,9 +34,9 @@ public class DBHelper {
 					
 						Thread.sleep(500);
 						
-						AddressDataSet address = service.loadAddressByUserId(user.getId());
+						service.loadAddressByUserId(user.getId());
 						
-						PhoneDataSet phone = service.loadPhoneById(1L);
+						service.loadPhoneById(1L);
 	
 						service.delete(user);
 					} catch (Exception e) {
