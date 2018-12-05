@@ -3,10 +3,9 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
 	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-	<bean id="cacheConfiguration" class="ru.otus.l131.cache.CacheConfiguration">
-	</bean>
+	<bean id="cacheConfiguration" class="ru.otus.l131.cache.CacheConfiguration"></bean>
 	
-	<bean id="cache" class="ru.otus.l131.cache.CacheStore">
+	<bean id="cache" class="ru.otus.l131.cache.CacheFactory" factory-method="getCache">
 		<constructor-arg ref="cacheConfiguration"></constructor-arg>
 	</bean>
 
