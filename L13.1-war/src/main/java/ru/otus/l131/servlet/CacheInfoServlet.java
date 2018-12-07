@@ -24,7 +24,7 @@ public class CacheInfoServlet extends HttpServlet {
 	@Autowired
 	private Cache cache;
 	
-	/**
+	/*
 	 * It is also possible to access Spring context directly, e.g:
 	 * 
 	 * WebApplicationContext springContext = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
