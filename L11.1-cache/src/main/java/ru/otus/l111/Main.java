@@ -2,6 +2,8 @@ package ru.otus.l111;
 
 import java.sql.SQLException;
 
+import ru.otus.l111.cache.CacheConfiguration;
+import ru.otus.l111.cache.CacheFactory;
 import ru.otus.l111.dataset.*;
 import ru.otus.l111.dbservice.*;
 
@@ -9,7 +11,7 @@ public class Main {
 
 	public static void main(String[] args) throws InterruptedException, SQLException {
 		
-		DBService service = new DBServiceHibernateImpl();
+		DBService service = new DBServiceHibernateImpl(CacheFactory.getCache(new CacheConfiguration()));
 		
 		System.out.println("Creating a user:");		
 		UserDataSet user = new UserDataSet("Johnny Johnny", 35);

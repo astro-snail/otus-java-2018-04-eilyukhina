@@ -22,9 +22,9 @@ public class DBServiceHibernateImpl implements DBService {
 	private final SessionFactory sessionFactory;
 	private final Cache<DataSetKey, DataSet> cache;
 
-    public DBServiceHibernateImpl() {
-        sessionFactory = new Configuration().configure().buildSessionFactory();
-       	cache = CacheFactory.getCache(new CacheConfiguration());
+    public DBServiceHibernateImpl(Cache<DataSetKey, DataSet> cache) {
+        this.sessionFactory = new Configuration().configure().buildSessionFactory();
+       	this.cache = cache;
     }
 
    	@Override

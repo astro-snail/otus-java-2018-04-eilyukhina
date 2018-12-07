@@ -9,9 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import ru.otus.l131.DBHelper;
 import ru.otus.l131.cache.Cache;
@@ -26,14 +24,18 @@ public class CacheInfoServlet extends HttpServlet {
 	@Autowired
 	private Cache cache;
 	
+	/**
+	 * It is also possible to access Spring context directly, e.g:
+	 * 
+	 * WebApplicationContext springContext = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
+	 * dbService = springContext.getBean("dbService", DBService.class);
+	 * cache = springContext.getBean("cache", Cache.class);
+	 */
 	@Override
 	public void init() throws ServletException {
-/*        WebApplicationContext springContext = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
-	    dbService = springContext.getBean("dbService", DBService.class);
-	    cache = springContext.getBean("cache", Cache.class);*/
 		SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, getServletContext());
 	}
-	
+		
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// If user has not logged in - redirect to login page
