@@ -11,8 +11,6 @@ import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
 
 import ru.otus.l111.cache.Cache;
-import ru.otus.l111.cache.CacheConfiguration;
-import ru.otus.l111.cache.CacheFactory;
 import ru.otus.l111.cache.Element;
 import ru.otus.l111.dao.*;
 import ru.otus.l111.dataset.*;
