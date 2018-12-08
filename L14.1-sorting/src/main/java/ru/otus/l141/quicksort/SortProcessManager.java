@@ -1,18 +1,20 @@
 package ru.otus.l141.quicksort;
 
 import java.util.Arrays;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import ru.otus.l141.generator.DataGenerator;
 
-public class SortProcessManager extends Thread { // Can be started in a separate thread, but runs in main thread in this example
+public class SortProcessManager {
+	
+	public volatile boolean shouldTerminate = false; 
+	public volatile boolean ready = false; 
 
 	private final SortProcess[] processes;
-	private int[] result;
-
-	private volatile boolean ready = false;
-	private volatile boolean terminated = false;
+	private int[] result = new int[0];
+	private final Logger logger = Logger.getLogger(getClass().getName());
 
 	public SortProcessManager(int count, int from, int to) {
 		this(count, new DataGenerator(from, to).getNumbers());
@@ -20,7 +22,7 @@ public class SortProcessManager extends Thread { // Can be started in a separate
 
 	public SortProcessManager(int count, int[] unsorted) {
 		
-		System.out.println("Unsorted: " + Arrays.toString(unsorted));
+		logger.log(Level.INFO, "Unsorted: " + Arrays.toString(unsorted));
 				
 		int numberOfElements = unsorted.length;
 		int numberPerProcess = numberOfElements / count;
@@ -28,7 +30,7 @@ public class SortProcessManager extends Thread { // Can be started in a separate
 		processes = new SortProcess[count];
 		
 		// Cyclic barrier to synchronise worker threads at the end of each iteration
-		// Before releasing worker threads, set ready = false to make them wait until next iteration is ready
+		// Before releasing worker threads, execute setReady(false) to make them wait until the next iteration is ready
 		CyclicBarrier cb = new CyclicBarrier(count, () -> setReady(false));
 
 		// Split data among worker threads
@@ -39,37 +41,37 @@ public class SortProcessManager extends Thread { // Can be started in a separate
 			if (i == count - 1) {
 				indexTo = numberOfElements;
 			}
-			processes[i] = new SortProcess(this, cb, i, Arrays.copyOfRange(unsorted, indexFrom, indexTo));
+			processes[i] = new SortProcess(cb, () -> isReady(), Arrays.copyOfRange(unsorted, indexFrom, indexTo));
 		}
 	}
+	
+	private synchronized boolean isReady() {
+		while (!(ready || shouldTerminate)) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
 
-	public synchronized void checkReady() {
-		while (!ready) {
-			if (!terminated) {
-				try {
-					wait();
-				} catch (InterruptedException e) {
-
-				}
-			} else {
-				return;
 			}
 		}
+		return shouldTerminate ? false : true;
 	}
 
-	public void setReady(boolean ready) {
+	private void setReady(boolean ready) {
 		this.ready = ready;
+
+		synchronized (this) {
+			notifyAll();
+		}	
+	}
+	
+	private void setShouldTerminate(boolean shouldTerminate) {
+		this.shouldTerminate = shouldTerminate;
+
+		synchronized (this) {
+			notifyAll();
+		}	
 	}
 
-	public boolean isTerminated() {
-		return terminated;
-	}
-
-	public void setTerminated(boolean terminated) {
-		this.terminated = terminated;
-	}
-
-	@Override
 	public void run() {
 		quickSort();
 	}
@@ -88,14 +90,24 @@ public class SortProcessManager extends Thread { // Can be started in a separate
 	}
 
 	private static int[] combine(int[] a, int[] b) {
-
 		int[] result = new int[a.length + b.length];
-        
-        System.arraycopy(a, 0, result, 0, a.length);
-        System.arraycopy(b, 0, result, a.length, b.length);
-        return result;
+		
+		System.arraycopy(a, 0, result, 0, a.length);
+		System.arraycopy(b, 0, result, a.length, b.length);
+		
+		return result;
     }
+	
+	private synchronized void await() {
+		while (ready) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
 
+			}
+		}
+	}
+	
 	private void quickSort() {
 		int processCount = processes.length;
 		int groupSize = processes.length;
@@ -108,8 +120,6 @@ public class SortProcessManager extends Thread { // Can be started in a separate
 
 			int numberOfGroups = processCount / groupSize;
 
-			CountDownLatch latch = new CountDownLatch(processCount);
-
 			for (int i = 0; i < numberOfGroups; i++) {
 				int pivot = choosePivot(i, groupSize);
 
@@ -117,33 +127,20 @@ public class SortProcessManager extends Thread { // Can be started in a separate
 					SortProcess low = processes[i * groupSize + j];
 					SortProcess high = processes[i * groupSize + groupSize / 2 + j];
 
-					low.setUpForIteration(SubGroup.LOW, high, pivot, latch);
-					high.setUpForIteration(SubGroup.HIGH, low, pivot, latch);
+					low.setUpForIteration(SubGroup.LOW, high, pivot);
+					high.setUpForIteration(SubGroup.HIGH, low, pivot);
 				}
 			}
-
-			synchronized (this) {
-				setReady(true);
-				notifyAll();
-			}
-
-			try {
-				// Wait until all worker threads finish current iteration
-				latch.await();
-			} catch (InterruptedException e) {
-
-			}
+			
+			setReady(true);
+			await();
 
 			groupSize = groupSize / 2;
 		}
-
-		synchronized (this)	{
-			setTerminated(true);
-			notifyAll();
-		}
+		
+		setShouldTerminate(true);
 
 		// Combine all threads results
-		result = new int[0];
 		for (SortProcess process : processes) {
 			try {
 				process.join();
@@ -153,7 +150,7 @@ public class SortProcessManager extends Thread { // Can be started in a separate
 			}
 		}
 		
-		System.out.println("Sorted: " + Arrays.toString(result));
+		logger.log(Level.INFO, "Sorted: " + Arrays.toString(result));
 	}
 
 }

@@ -1,6 +1,5 @@
 package ru.otus.l141.generator;
 
-import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -28,10 +27,5 @@ public class DataGenerator {
 
 	public int[] getNumbers() {
 		return numbers;
-	}
-
-	@Override
-	public String toString() {
-		return Arrays.toString(numbers);
 	}
 }

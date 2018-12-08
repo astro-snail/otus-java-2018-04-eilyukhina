@@ -3,33 +3,33 @@ package ru.otus.l141.quicksort;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SortProcess extends Thread {
-	private final int id;
 	private int[] numbers;
 	private int[] low;
 	private int[] high;
-	
-	private volatile boolean partitioned = false;
-	private CyclicBarrier cb;
-	private CountDownLatch latch;
-
 	private SubGroup subGroup;
 	private SortProcess partner;
 	private int pivot;
+	
+	private volatile boolean partitioned = false;
 
-	private SortProcessManager manager;
+	private CyclicBarrier cb;
+	private Callable<Boolean> callback;
 
-	public SortProcess(SortProcessManager manager, CyclicBarrier cb, int id, int[] numbers) {
-		this.manager = manager;
-		this.id = id;
+	private final Logger logger = Logger.getLogger(getClass().getName());
+	
+	public SortProcess(CyclicBarrier cb, Callable<Boolean> callback, int[] numbers) {
 		this.numbers = numbers;
 		this.cb = cb;
+		this.callback = callback;
 	}
-
+	
 	public int choosePivotSorted() {
 		if (numbers == null || numbers.length == 0) {
 			return -1;
@@ -45,7 +45,7 @@ public class SortProcess extends Thread {
 		return numbers[random.nextInt(numbers.length)];
 	}
 
-	public void partition() {
+	private void partition() {
 		int index = 0;
 
 		for (int i = 0; i < numbers.length; i++) {
@@ -58,23 +58,25 @@ public class SortProcess extends Thread {
 		low = Arrays.copyOfRange(numbers, 0, index);
 		high = Arrays.copyOfRange(numbers, index, numbers.length);
 
-		// Test output
-		System.out.println("Process ID: " + getProcessId() + " " + subGroup.toString() + " pivot: " + pivot + " low / high " + Arrays.toString(low) + " / " + Arrays.toString(high));
+		logger.log(Level.INFO, "Thread ID: " + Thread.currentThread().getId() + " " + subGroup.toString() + " pivot: " + pivot + " low / high " + Arrays.toString(low) + " / " + Arrays.toString(high));
 
+		partitioned = true;
+		
 		synchronized (this) {
-			partitioned = true;
 			notifyAll();
 		}
 	}
 
-	public void setUpForIteration(SubGroup subGroup, SortProcess partner, int pivot, CountDownLatch latch) {
-		this.subGroup = subGroup; // low or high partition
-		this.partner = partner; // partner thread to exchange data
+	public void setUpForIteration(SubGroup subGroup, SortProcess partner, int pivot) {
+		// Low or high partition
+		this.subGroup = subGroup;
+		// Partner thread to exchange data with
+		this.partner = partner;
+		// Pivot for partitioning
 		this.pivot = pivot;
-		this.latch = latch; // count down latch for start of a new iteration
 	}
 
-	public int partitionSequential(int from, int to) {
+	private int partitionSequential(int from, int to) {
 		int pivot = numbers[from];
 		int index = from;
 
@@ -89,7 +91,7 @@ public class SortProcess extends Thread {
 		return index;
 	}
 
-	public void quickSortSequential(int from, int to) {
+	private void quickSortSequential(int from, int to) {
 		if (to - from <= 1) {
 			return;
 		}
@@ -104,27 +106,25 @@ public class SortProcess extends Thread {
 		numbers[j] = temp;
 	}
 
-	public synchronized int[] getData() {
-		while (!partitioned) {
-			try {
-				wait();
-			} catch (InterruptedException e) {
-
+	private int[] getData() {
+		synchronized (this) {
+			while (!partitioned) {
+				try {
+					wait();
+				} catch (InterruptedException e) {
+				
+				}
 			}
-		}
+		}	
 		partitioned = false;
 		return subGroup == SubGroup.LOW ? high : low;
-	}
-
-	public int getProcessId() {
-		return id;
 	}
 
 	public int[] getNumbers() {
 		return numbers;
 	}
 
-	public void setData(int[] data) {
+	private void setData(int[] data) {
 		int[] base = subGroup == SubGroup.LOW ? low : high;
 
 		int[] mergedNumbers = new int[base.length + data.length];
@@ -135,16 +135,22 @@ public class SortProcess extends Thread {
 		numbers = mergedNumbers;
 	}
 
-	private void swapData() {
-		int[] data = partner.getData();
-		setData(data);
+	private void merge() {
+		setData(partner.getData());
 	}
 
 	@Override
 	public void run() {
-		quickSort(false);
+		try {
+			quickSort(false);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
+		}
 	}
 	
+	/**
+	 * Wait for all worker threads to finish current iteration
+	 */
 	private void await() {
 		try {
 			cb.await();
@@ -154,26 +160,16 @@ public class SortProcess extends Thread {
 
 		}
 	}
-
-	public void quickSort(boolean preSort) {
-		
+	
+	private void quickSort(boolean preSort) throws Exception {
 		if (preSort) {
 			quickSortSequential(0, numbers.length);
 		}
 		
-		while (!manager.isTerminated()) {
-			manager.checkReady();
-			
-			if (manager.isTerminated()) break;
-			
+		while (callback.call()) {
 			partition();
-			swapData();
-			
-			// Wait for all worker threads to finish current iteration
+			merge();
 			await();
-			
-			// Count down to release the main thread for a new iteration
-			latch.countDown();
 		}
 		
 		quickSortSequential(0, numbers.length);
