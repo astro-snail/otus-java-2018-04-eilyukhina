@@ -8,12 +8,12 @@ import java.util.logging.Logger;
 import ru.otus.l141.generator.DataGenerator;
 
 public class SortProcessManager {
-	
-	public volatile boolean shouldTerminate = false; 
-	public volatile boolean ready = false; 
+	private boolean shouldTerminate = false; 
+	private boolean ready = false; 
 
 	private final SortProcess[] processes;
 	private int[] result = new int[0];
+	
 	private final Logger logger = Logger.getLogger(getClass().getName());
 
 	public SortProcessManager(int count, int from, int to) {
@@ -56,20 +56,14 @@ public class SortProcessManager {
 		return shouldTerminate ? false : true;
 	}
 
-	private void setReady(boolean ready) {
+	private synchronized void setReady(boolean ready) {
 		this.ready = ready;
-
-		synchronized (this) {
-			notifyAll();
-		}	
+		notifyAll();
 	}
 	
-	private void setShouldTerminate(boolean shouldTerminate) {
+	private synchronized void setShouldTerminate(boolean shouldTerminate) {
 		this.shouldTerminate = shouldTerminate;
-
-		synchronized (this) {
-			notifyAll();
-		}	
+		notifyAll();
 	}
 
 	public void run() {
