@@ -22,7 +22,7 @@ public class SortProcess extends Thread {
 	private CyclicBarrier cb;
 	private Callable<Boolean> callback;
 
-	private final Logger logger = Logger.getLogger(getClass().getName());
+	private final static Logger logger = Logger.getLogger(SortProcess.class.getName());
 	
 	public SortProcess(CyclicBarrier cb, Callable<Boolean> callback, int[] numbers) {
 		this.numbers = numbers;

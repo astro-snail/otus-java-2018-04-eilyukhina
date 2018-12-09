@@ -14,7 +14,7 @@ public class SortProcessManager {
 	private final SortProcess[] processes;
 	private int[] result = new int[0];
 	
-	private final Logger logger = Logger.getLogger(getClass().getName());
+	private final static Logger logger = Logger.getLogger(SortProcessManager.class.getName());
 
 	public SortProcessManager(int count, int from, int to) {
 		this(count, new DataGenerator(from, to).getNumbers());
