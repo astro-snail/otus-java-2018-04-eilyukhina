@@ -8,9 +8,7 @@ import javax.servlet.ServletContextListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import ru.otus.l151.dataset.AddressDataSet;
-import ru.otus.l151.dataset.PhoneDataSet;
-import ru.otus.l151.dataset.UserDataSet;
+import ru.otus.l151.DBHelper;
 import ru.otus.l151.dbservice.DBService;
 import ru.otus.l151.uiservice.UIService;
 import ru.otus.l151.messagesystem.MessageSystem;
@@ -30,24 +28,8 @@ public class ContextListener implements ServletContextListener {
 	public void contextInitialized(ServletContextEvent event) {
 	    SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, event.getServletContext());
 
-	    // Temp code
-	    UserDataSet user = null;
-	    
-       	try {
-       		user = new UserDataSet("Test User 1", 25);
-       		user.setAddress(new AddressDataSet("Green Lane"));
-       		user.addPhone(new PhoneDataSet("1234567890"));
-			dbService.save(user);
-		
-       	  	user = new UserDataSet("Test User 2", 35);
-       	  	user.setAddress(new AddressDataSet("New Street"));
-       	  	user.addPhone(new PhoneDataSet("0147258369"));
-       	  	dbService.save(user);
-       	 
-       	} catch (SQLException e) {
-
-		}
-       	// End of temp code
+	    // Create some initial data - would not be required in real life
+	    DBHelper.doWork(dbService);
        	
        	dbService.register();
        	uiService.register();
@@ -57,11 +39,11 @@ public class ContextListener implements ServletContextListener {
 
 	@Override
 	public void contextDestroyed(ServletContextEvent event) {
-		messageSystem.dispose();
 		try {
+			messageSystem.dispose();
 			dbService.shutdown();
-		} catch (SQLException e) {
-			
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 
