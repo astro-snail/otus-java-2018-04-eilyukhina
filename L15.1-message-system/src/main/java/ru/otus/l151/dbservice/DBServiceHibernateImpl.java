@@ -10,7 +10,6 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
 
-import ru.otus.l151.app.DBService;
 import ru.otus.l151.app.MessageSystemContext;
 import ru.otus.l151.cache.*;
 import ru.otus.l151.dao.*;
@@ -27,11 +26,6 @@ public class DBServiceHibernateImpl implements DBService {
         this.sessionFactory = new Configuration().configure().buildSessionFactory();
        	this.cache = cache;
        	this.context = context;
-       	register();
-    }
-    
-    public void register() {
-    	context.registerDBService(this);
     }
     
    	@Override
@@ -183,6 +177,11 @@ public class DBServiceHibernateImpl implements DBService {
 		for (T dataSet : dataSets) {
 			toCache(dataSet);
 		}
+	}
+	
+	@Override
+	public void register() {
+		context.registerDBService(this);		
 	}
 
 	@Override

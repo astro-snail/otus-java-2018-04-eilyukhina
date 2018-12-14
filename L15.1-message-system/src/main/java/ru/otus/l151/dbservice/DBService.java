@@ -1,4 +1,4 @@
-package ru.otus.l151.app;
+package ru.otus.l151.dbservice;
 
 import java.sql.SQLException;
 import java.util.List;

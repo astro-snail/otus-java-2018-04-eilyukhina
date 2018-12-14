@@ -2,8 +2,8 @@ package ru.otus.l151;
 
 import java.sql.SQLException;
 
-import ru.otus.l151.app.DBService;
 import ru.otus.l151.dataset.*;
+import ru.otus.l151.dbservice.DBService;
 
 public class DBHelper {
 	

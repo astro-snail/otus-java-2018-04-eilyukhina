@@ -3,7 +3,6 @@ package ru.otus.l151.servlet;
 import java.io.IOException;
 
 import javax.servlet.AsyncContext;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -12,15 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import ru.otus.l151.DBHelper;
-import ru.otus.l151.app.DBService;
 import ru.otus.l151.cache.Cache;
 
 @SuppressWarnings("serial")
 public class CacheInfoServlet extends HttpServlet {
-	
-	@Autowired
-	private DBService dbService;
 	
 	@Autowired
 	private Cache cache;

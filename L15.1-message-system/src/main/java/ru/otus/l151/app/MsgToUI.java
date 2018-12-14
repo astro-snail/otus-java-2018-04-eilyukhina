@@ -4,6 +4,7 @@ import ru.otus.l151.messagesystem.Address;
 import ru.otus.l151.messagesystem.Addressee;
 import ru.otus.l151.messagesystem.Message;
 import ru.otus.l151.messagesystem.MessageException;
+import ru.otus.l151.uiservice.UIService;
 
 public abstract class MsgToUI extends Message {
 	

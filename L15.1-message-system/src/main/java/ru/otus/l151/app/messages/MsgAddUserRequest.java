@@ -4,9 +4,9 @@ import java.sql.SQLException;
 
 import javax.servlet.AsyncContext;
 
-import ru.otus.l151.app.DBService;
 import ru.otus.l151.app.MsgToDB;
 import ru.otus.l151.dataset.UserDataSet;
+import ru.otus.l151.dbservice.DBService;
 import ru.otus.l151.messagesystem.Address;
 import ru.otus.l151.messagesystem.MessageException;
 

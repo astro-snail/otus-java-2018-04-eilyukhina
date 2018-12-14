@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import ru.otus.l151.app.UIService;
+import ru.otus.l151.uiservice.UIService;
 
 @SuppressWarnings("serial")
 public class UserInfoServlet extends HttpServlet {
@@ -25,6 +25,6 @@ public class UserInfoServlet extends HttpServlet {
 		
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		uiService.requestUser(request.startAsync(request, response), 1L);
+		uiService.handleRequest(request.startAsync(request, response), 1L);
 	}	
 }

@@ -1,12 +1,12 @@
 package ru.otus.l151.app.messages;
 
-import ru.otus.l151.app.UIService;
 import ru.otus.l151.dataset.UserDataSet;
 
 import javax.servlet.AsyncContext;
 
 import ru.otus.l151.app.MsgToUI;
 import ru.otus.l151.messagesystem.Address;
+import ru.otus.l151.uiservice.UIService;
 
 public class MsgAddUserResponse extends MsgToUI {
 	private final UserDataSet user;
@@ -19,6 +19,6 @@ public class MsgAddUserResponse extends MsgToUI {
 	}
 
 	public void exec(UIService uiService) {
-		uiService.receiveUser(asyncContext, user);
+		uiService.handleResponse(asyncContext, user);
 	}
 }

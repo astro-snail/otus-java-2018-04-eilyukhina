@@ -5,9 +5,9 @@ import java.util.List;
 import javax.servlet.AsyncContext;
 
 import ru.otus.l151.app.MsgToUI;
-import ru.otus.l151.app.UIService;
 import ru.otus.l151.dataset.UserDataSet;
 import ru.otus.l151.messagesystem.Address;
+import ru.otus.l151.uiservice.UIService;
 
 public class MsgAllUsersResponse extends MsgToUI {
 	private final List<UserDataSet> users;
@@ -21,7 +21,7 @@ public class MsgAllUsersResponse extends MsgToUI {
 
 	@Override
 	public void exec(UIService uiService) {
-		uiService.receiveAllUsers(asyncContext, users);
+		uiService.handleResponse(asyncContext, users);
 	}
 
 }

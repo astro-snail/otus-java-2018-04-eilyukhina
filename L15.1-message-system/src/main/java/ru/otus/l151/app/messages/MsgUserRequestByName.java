@@ -1,7 +1,6 @@
 package ru.otus.l151.app.messages;
 
 import java.sql.SQLException;
-import java.util.List;
 
 import javax.servlet.AsyncContext;
 
@@ -11,19 +10,20 @@ import ru.otus.l151.dbservice.DBService;
 import ru.otus.l151.messagesystem.Address;
 import ru.otus.l151.messagesystem.MessageException;
 
-public class MsgAllUsersRequest extends MsgToDB {
+public class MsgUserRequestByName extends MsgToDB {
+	private final String name;
 	private final AsyncContext asyncContext;
 	
-	public MsgAllUsersRequest(Address from, Address to, AsyncContext asyncContext) {
+	public MsgUserRequestByName(Address from, Address to, AsyncContext asyncContext, String name) {
 		super(from, to);
+		this.name = name;
 		this.asyncContext = asyncContext;
-		
 	}
 
 	public void exec(DBService dbService) throws MessageException {
 		try {
-			List<UserDataSet> users = dbService.loadAll();
-			dbService.getMessageSystem().sendMessage(new MsgAllUsersResponse(getTo(), getFrom(), asyncContext, users));
+			UserDataSet user = dbService.loadByName(name);
+			dbService.getMessageSystem().sendMessage(new MsgUserResponse(getTo(), getFrom(), asyncContext, user));
 		} catch (SQLException e) {
 			throw new MessageException(e);
 		}

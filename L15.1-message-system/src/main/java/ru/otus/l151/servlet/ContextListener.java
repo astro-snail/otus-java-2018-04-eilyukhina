@@ -8,11 +8,11 @@ import javax.servlet.ServletContextListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import ru.otus.l151.app.DBService;
-import ru.otus.l151.app.UIService;
 import ru.otus.l151.dataset.AddressDataSet;
 import ru.otus.l151.dataset.PhoneDataSet;
 import ru.otus.l151.dataset.UserDataSet;
+import ru.otus.l151.dbservice.DBService;
+import ru.otus.l151.uiservice.UIService;
 import ru.otus.l151.messagesystem.MessageSystem;
 
 public class ContextListener implements ServletContextListener {
@@ -30,6 +30,7 @@ public class ContextListener implements ServletContextListener {
 	public void contextInitialized(ServletContextEvent event) {
 	    SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, event.getServletContext());
 
+	    // Temp code
 	    UserDataSet user = null;
 	    
        	try {
@@ -46,14 +47,18 @@ public class ContextListener implements ServletContextListener {
        	} catch (SQLException e) {
 
 		}
+       	// End of temp code
+       	
+       	dbService.register();
+       	uiService.register();
        	
        	messageSystem.start();
 	}
 
 	@Override
 	public void contextDestroyed(ServletContextEvent event) {
+		messageSystem.dispose();
 		try {
-			messageSystem.dispose();
 			dbService.shutdown();
 		} catch (SQLException e) {
 			

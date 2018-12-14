@@ -3,23 +3,20 @@ package ru.otus.l151.app.messages;
 import javax.servlet.AsyncContext;
 
 import ru.otus.l151.app.MsgToUI;
-import ru.otus.l151.dataset.UserDataSet;
 import ru.otus.l151.messagesystem.Address;
 import ru.otus.l151.uiservice.UIService;
 
-public class MsgUserResponse extends MsgToUI {
-	private final UserDataSet user;
+public class MsgDeleteUserResponse extends MsgToUI {
+	private final String message;
 	private final AsyncContext asyncContext;
 	
-	public MsgUserResponse(Address from, Address to, AsyncContext asyncContext, UserDataSet user) {
+	public MsgDeleteUserResponse(Address from, Address to, AsyncContext asyncContext, String message) {
 		super(from, to);
-		this.user = user;
+		this.message = message;
 		this.asyncContext = asyncContext;
 	}
 
-	@Override
 	public void exec(UIService uiService) {
-		uiService.handleResponse(asyncContext, user);
+		uiService.handleResponse(asyncContext, message);
 	}
-
 }

@@ -20,7 +20,7 @@
        <constructor-arg ref="cache"></constructor-arg>
     </bean>   
     
-    <bean id="uiService" class="ru.otus.l151.servlet.UIServiceImpl">
+    <bean id="uiService" class="ru.otus.l151.uiservice.UIServiceImpl">
        <constructor-arg ref="messageSystemContext"></constructor-arg>
     </bean>    
 

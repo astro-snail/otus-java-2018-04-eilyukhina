@@ -2,19 +2,6 @@ package ru.otus.l151;
 
 import java.sql.SQLException;
 
-import ru.otus.l151.app.DBService;
-import ru.otus.l151.app.MessageSystemContext;
-import ru.otus.l151.app.UIService;
-import ru.otus.l151.cache.CacheConfiguration;
-import ru.otus.l151.cache.CacheFactory;
-import ru.otus.l151.dataset.AddressDataSet;
-import ru.otus.l151.dataset.PhoneDataSet;
-import ru.otus.l151.dataset.UserDataSet;
-import ru.otus.l151.dbservice.DBServiceHibernateImpl;
-import ru.otus.l151.messagesystem.Address;
-import ru.otus.l151.messagesystem.MessageSystem;
-import ru.otus.l151.servlet.UIServiceImpl;
-
 public class Main {
 	
 	public static void main(String[] args) throws InterruptedException, SQLException {
