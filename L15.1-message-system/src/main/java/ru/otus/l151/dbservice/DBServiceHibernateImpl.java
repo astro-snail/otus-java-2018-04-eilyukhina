@@ -1,7 +1,10 @@
 package ru.otus.l151.dbservice;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -14,6 +17,7 @@ import ru.otus.l151.app.MessageSystemContext;
 import ru.otus.l151.cache.*;
 import ru.otus.l151.dao.*;
 import ru.otus.l151.dataset.*;
+import ru.otus.l151.messagesystem.Address;
 import ru.otus.l151.messagesystem.MessageSystem;
 
 public class DBServiceHibernateImpl implements DBService {
@@ -180,12 +184,32 @@ public class DBServiceHibernateImpl implements DBService {
 	}
 	
 	@Override
-	public void register() {
+	public void init() {
 		context.registerDBService(this);		
 	}
 
 	@Override
+	public Address getAddress() {
+		return context.getDBServiceAddress();
+	}
+	
+	@Override
 	public MessageSystem getMessageSystem() {
 		return context.getMessageSystem();
+	}
+
+	@Override
+	public Map<String, String> getCacheParameters() {
+		Map<String, String> cacheParameters = new HashMap<>();
+		
+		Properties cacheProperties = cache.getProperties();
+		for (Object key : cacheProperties.keySet()) {
+			cacheParameters.put(key.toString(), cacheProperties.get(key).toString());
+		}
+		cacheParameters.put("size", String.valueOf(cache.getSize()));
+		cacheParameters.put("hitCount", String.valueOf(cache.getHitCount()));
+		cacheParameters.put("missCount", String.valueOf(cache.getMissCount()));
+		
+		return cacheParameters;
 	}
 }

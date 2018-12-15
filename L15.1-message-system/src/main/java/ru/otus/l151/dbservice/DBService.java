@@ -2,11 +2,14 @@ package ru.otus.l151.dbservice;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import ru.otus.l151.dataset.*;
 import ru.otus.l151.messagesystem.Addressee;
 
 public interface DBService extends Addressee {
+	
+	void init();
 	
 	void save(UserDataSet user) throws SQLException;
 
@@ -25,6 +28,8 @@ public interface DBService extends Addressee {
 	List<PhoneDataSet> loadPhonesByUserId(Long userId) throws SQLException;
 	
 	void delete(UserDataSet user) throws SQLException;
+	
+	Map<String, String> getCacheParameters();
 	
 	void shutdown() throws SQLException;
 }

@@ -1,27 +1,26 @@
 package ru.otus.l151.app.messages;
 
-import java.util.List;
+import java.util.Map;
 
 import javax.servlet.AsyncContext;
 
 import ru.otus.l151.app.MsgToUI;
-import ru.otus.l151.dataset.UserDataSet;
 import ru.otus.l151.messagesystem.Address;
 import ru.otus.l151.uiservice.UIService;
 
-public class MsgAllUsersResponse extends MsgToUI {
-	private final List<UserDataSet> users;
+public class MsgCacheParametersResponse extends MsgToUI {
+	private final Map<String, String> cacheParameters;
 	private final AsyncContext asyncContext;
 	
-	public MsgAllUsersResponse(Address from, Address to, AsyncContext asyncContext, List<UserDataSet> users) {
+	public MsgCacheParametersResponse(Address from, Address to, AsyncContext asyncContext, Map<String, String> cacheParameters) {
 		super(from, to);
-		this.users = users;
+		this.cacheParameters = cacheParameters;
 		this.asyncContext = asyncContext;
 	}
 
 	@Override
 	public void exec(UIService uiService) {
-		uiService.handleUserResponse(asyncContext, users);
+		uiService.handleCacheResponse(asyncContext, cacheParameters);
 	}
 
 }

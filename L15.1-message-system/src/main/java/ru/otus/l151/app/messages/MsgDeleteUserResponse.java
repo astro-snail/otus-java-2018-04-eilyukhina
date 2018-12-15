@@ -17,6 +17,6 @@ public class MsgDeleteUserResponse extends MsgToUI {
 	}
 
 	public void exec(UIService uiService) {
-		uiService.handleResponse(asyncContext, message);
+		uiService.handleUserResponse(asyncContext, message);
 	}
 }

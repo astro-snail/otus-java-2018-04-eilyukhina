@@ -30,7 +30,15 @@ public class LoginServlet extends HttpServlet {
 
 			// Save username in session
 			request.getSession().setAttribute("username", username);
-			response.sendRedirect(request.getContextPath() + "/admin.html");
+			response.sendRedirect(request.getContextPath());
 		}
 	}	
+	
+	public static boolean checkLoggedIn(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		if (request.getSession().getAttribute("username") == null) {
+			response.sendRedirect(request.getContextPath() + "/login");
+			return false;
+		}	
+		return true;
+	}
 }

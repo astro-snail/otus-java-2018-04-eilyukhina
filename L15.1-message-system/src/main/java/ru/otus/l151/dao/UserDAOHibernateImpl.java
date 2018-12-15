@@ -1,6 +1,5 @@
 package ru.otus.l151.dao;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -49,7 +48,7 @@ public class UserDAOHibernateImpl implements UserDAO {
 	}
 	
 	@Override
-	public void delete(UserDataSet dataSet) throws SQLException {
+	public void delete(UserDataSet dataSet) {
 		session.delete(dataSet);
 	}
 

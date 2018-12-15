@@ -1,6 +1,5 @@
 package ru.otus.l151.dao;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -21,17 +20,17 @@ public class AddressDAOHibernateImpl implements AddressDAO {
 	}
 	
 	@Override
-	public void save(AddressDataSet dataSet) throws SQLException {
+	public void save(AddressDataSet dataSet) {
 		session.saveOrUpdate(dataSet);
 	}
 
 	@Override
-	public AddressDataSet load(Long id) throws SQLException {
+	public AddressDataSet load(Long id) {
 		return session.load(AddressDataSet.class, id);
 	}
 
 	@Override
-	public AddressDataSet loadByStreet(String street) throws SQLException {
+	public AddressDataSet loadByStreet(String street) {
 		CriteriaBuilder builder = session.getCriteriaBuilder();
         CriteriaQuery<AddressDataSet> criteria = builder.createQuery(AddressDataSet.class);
         Root<AddressDataSet> from = criteria.from(AddressDataSet.class);
@@ -41,7 +40,7 @@ public class AddressDAOHibernateImpl implements AddressDAO {
 	}
 
 	@Override
-	public AddressDataSet loadByUserId(Long userId) throws SQLException {
+	public AddressDataSet loadByUserId(Long userId) {
 		CriteriaBuilder builder = session.getCriteriaBuilder();
         CriteriaQuery<AddressDataSet> criteria = builder.createQuery(AddressDataSet.class);
         Root<AddressDataSet> from = criteria.from(AddressDataSet.class);
@@ -51,7 +50,7 @@ public class AddressDAOHibernateImpl implements AddressDAO {
 	}
 
 	@Override
-	public List<AddressDataSet> loadAll() throws SQLException {
+	public List<AddressDataSet> loadAll() {
 		CriteriaBuilder builder = session.getCriteriaBuilder();
         CriteriaQuery<AddressDataSet> criteria = builder.createQuery(AddressDataSet.class);
         criteria.from(AddressDataSet.class);
@@ -59,7 +58,7 @@ public class AddressDAOHibernateImpl implements AddressDAO {
 	}
 
 	@Override
-	public void delete(AddressDataSet dataSet) throws SQLException {
+	public void delete(AddressDataSet dataSet) {
 		session.delete(dataSet);
 	}
 	

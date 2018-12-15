@@ -2,6 +2,9 @@ package ru.otus.l151.servlet;
 
 import java.io.IOException;
 
+import javax.servlet.AsyncContext;
+import javax.servlet.AsyncEvent;
+import javax.servlet.AsyncListener;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +28,38 @@ public class UserListServlet extends HttpServlet {
 		
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		uiService.handleRequest(request.startAsync(request, response));
+		if (LoginServlet.checkLoggedIn(request, response)) {
+			AsyncListener listener = new AsyncListener() {
+				@Override
+				public void onTimeout(AsyncEvent event) throws IOException {
+					
+				}
+				
+				@Override
+				public void onStartAsync(AsyncEvent event) throws IOException {
+				
+				}
+				
+				@Override
+				public void onError(AsyncEvent event) throws IOException {
+					
+				}
+				
+				@Override
+				public void onComplete(AsyncEvent event) throws IOException {
+					HttpServletRequest request = (HttpServletRequest)event.getSuppliedRequest();
+					HttpServletResponse response = (HttpServletResponse)event.getSuppliedResponse();
+					try {
+						request.getRequestDispatcher("/user-list.jsp").forward(request, response);
+					} catch (ServletException e) {
+						throw new RuntimeException(e);
+					}
+				}
+				
+			};	
+			AsyncContext asyncContext = request.startAsync(request, response);
+			asyncContext.addListener(listener);
+			uiService.handleUserRequest(asyncContext);
+		}	
 	}	
 }

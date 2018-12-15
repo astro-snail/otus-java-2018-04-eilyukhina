@@ -1,6 +1,7 @@
 package ru.otus.l151.uiservice;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.AsyncContext;
 
@@ -9,18 +10,26 @@ import ru.otus.l151.messagesystem.Addressee;
 
 public interface UIService extends Addressee {
 	
-	void handleRequest(AsyncContext asyncContext, Long id);
+	void init();
 	
-	void handleRequest(AsyncContext asyncContext, String name);
+	void handleUserRequest(AsyncContext asyncContext, Long id);
 	
-	void handleRequest(AsyncContext asyncContext);
+	void handleUserRequest(AsyncContext asyncContext, String name);
 	
-	void handleRequest(AsyncContext asyncContext, Operation operation, UserDataSet user);
+	void handleUserRequest(AsyncContext asyncContext);
 	
-	void handleResponse(AsyncContext asyncContext, UserDataSet user);
+	void handleUserRequest(AsyncContext asyncContext, Operation operation, UserDataSet user);
 	
-	void handleResponse(AsyncContext asyncContext, List<UserDataSet> users);
+	void handleUserResponse(AsyncContext asyncContext, UserDataSet user);
 	
-	void handleResponse(AsyncContext asyncContext, String message);
+	void handleUserResponse(AsyncContext asyncContext, List<UserDataSet> users);
+	
+	void handleUserResponse(AsyncContext asyncContext, String message);
+	
+	void handleCacheRequest(AsyncContext asyncContext);
+	
+	void handleCacheResponse(AsyncContext asyncContext, Map<String, String> cacheParameters);
+	
+	void shutdown();
 	
 }

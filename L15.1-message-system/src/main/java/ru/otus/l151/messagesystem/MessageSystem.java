@@ -12,7 +12,7 @@ public class MessageSystem {
 	
 	private static final Logger logger = Logger.getLogger(MessageSystem.class.getName());
 	
-	private final Map<Addressee, Address> addresses;
+	private final Map<Address, Addressee> addresses;
 	private final Map<Address, LinkedBlockingQueue<Message>> messages;
 	private final List<Thread> workers;
 	
@@ -27,31 +27,27 @@ public class MessageSystem {
 	}
 	
 	public Address registerAddressee(Addressee addressee, Address address) {
-		addresses.put(addressee, address);
+		addresses.put(address, addressee);
 		messages.put(address, new LinkedBlockingQueue<>());
 		return address;
 	}
 	
-	public Address getAddress(Addressee addressee) {
-		return addresses.get(addressee);
-	}
-
 	public void sendMessage(Message message) {
 		messages.get(message.getTo()).add(message);
 	}
 
 	public void start() {
-		for (Map.Entry<Addressee, Address> entry : addresses.entrySet()) {
-			String name = "MS-worker-" + entry.getValue().getId();
+		for (Map.Entry<Address, Addressee> entry : addresses.entrySet()) {
+			String name = "MS-worker-" + entry.getKey().getId();
 			Thread thread = new Thread(() -> {
-				LinkedBlockingQueue<Message> queue = messages.get(entry.getValue());
+				LinkedBlockingQueue<Message> queue = messages.get(entry.getKey());
 				while (true) {
 					try {
 						Message message = queue.take();
 						logger.log(Level.INFO, "Message retrieved. " + message.getClass());
-						message.exec(entry.getKey());
+						message.exec(entry.getValue());
 					} catch (MessageException e) {
-						logger.log(Level.WARNING, "Message not sent. " + e.getMessage());
+						logger.log(Level.WARNING, "Error in message processing. " + e.getMessage());
 					} catch (InterruptedException e) {
 						logger.log(Level.INFO, "Thread interrupted. Finishing: " + name);
 						return;

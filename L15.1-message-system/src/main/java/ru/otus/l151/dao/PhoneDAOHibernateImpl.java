@@ -1,6 +1,5 @@
 package ru.otus.l151.dao;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -21,17 +20,17 @@ public class PhoneDAOHibernateImpl implements PhoneDAO {
 	}
 	
 	@Override
-	public void save(PhoneDataSet dataSet) throws SQLException {
+	public void save(PhoneDataSet dataSet) {
 		session.saveOrUpdate(dataSet);
 	}
 
 	@Override
-	public PhoneDataSet load(Long id) throws SQLException {
+	public PhoneDataSet load(Long id) {
 		return session.load(PhoneDataSet.class, id);
 	}
 
 	@Override
-	public PhoneDataSet loadByNumber(String number) throws SQLException {
+	public PhoneDataSet loadByNumber(String number) {
 		CriteriaBuilder builder = session.getCriteriaBuilder();
         CriteriaQuery<PhoneDataSet> criteria = builder.createQuery(PhoneDataSet.class);
         Root<PhoneDataSet> from = criteria.from(PhoneDataSet.class);
@@ -41,7 +40,7 @@ public class PhoneDAOHibernateImpl implements PhoneDAO {
 	}
 
 	@Override
-	public List<PhoneDataSet> loadByUserId(Long userId) throws SQLException {
+	public List<PhoneDataSet> loadByUserId(Long userId) {
 		CriteriaBuilder builder = session.getCriteriaBuilder();
         CriteriaQuery<PhoneDataSet> criteria = builder.createQuery(PhoneDataSet.class);
         Root<PhoneDataSet> from = criteria.from(PhoneDataSet.class);
@@ -51,7 +50,7 @@ public class PhoneDAOHibernateImpl implements PhoneDAO {
 	}
 
 	@Override
-	public List<PhoneDataSet> loadAll() throws SQLException {
+	public List<PhoneDataSet> loadAll() {
 		CriteriaBuilder builder = session.getCriteriaBuilder();
         CriteriaQuery<PhoneDataSet> criteria = builder.createQuery(PhoneDataSet.class);
         criteria.from(PhoneDataSet.class);
@@ -59,7 +58,7 @@ public class PhoneDAOHibernateImpl implements PhoneDAO {
 	}
 
 	@Override
-	public void delete(PhoneDataSet dataSet) throws SQLException {
+	public void delete(PhoneDataSet dataSet) {
 		session.delete(dataSet);
 	}
 

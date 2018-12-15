@@ -19,7 +19,7 @@ public class MsgUserResponse extends MsgToUI {
 
 	@Override
 	public void exec(UIService uiService) {
-		uiService.handleResponse(asyncContext, user);
+		uiService.handleUserResponse(asyncContext, user);
 	}
 
 }
