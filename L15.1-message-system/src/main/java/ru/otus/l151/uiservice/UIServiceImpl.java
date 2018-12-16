@@ -3,13 +3,12 @@ package ru.otus.l151.uiservice;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.AsyncContext;
-
 import ru.otus.l151.app.MessageSystemContext;
 import ru.otus.l151.app.messages.*;
 import ru.otus.l151.dataset.UserDataSet;
 import ru.otus.l151.messagesystem.Address;
 import ru.otus.l151.messagesystem.Message;
+import ru.otus.l151.messagesystem.MessageContext;
 import ru.otus.l151.messagesystem.MessageSystem;
 
 public class UIServiceImpl implements UIService {
@@ -34,37 +33,38 @@ public class UIServiceImpl implements UIService {
 	public void init() {
 		context.registerUIService(this);		
 	}
+
+	@Override
+	public void handleUserRequest(MessageContext messageContext, Long id) {
+		Message message = new MsgUserRequestById(getAddress(), context.getDBServiceAddress(), messageContext, id);
+        getMessageSystem().sendMessage(message);		
+	}
 	
 	@Override
-	public void handleUserRequest(AsyncContext asyncContext, Long id) {
-        Message message = new MsgUserRequestById(getAddress(), context.getDBServiceAddress(), asyncContext, id);
-        getMessageSystem().sendMessage(message);
-    }
-	
-	@Override
-	public void handleUserRequest(AsyncContext asyncContext, String name) {
-		Message message = new MsgUserRequestByName(getAddress(), context.getDBServiceAddress(), asyncContext, name);
+	public void handleUserRequest(MessageContext messageContext, String name) {
+		Message message = new MsgUserRequestByName(getAddress(), context.getDBServiceAddress(), messageContext, name);
         getMessageSystem().sendMessage(message);
 	}
 
 	@Override
-	public void handleUserRequest(AsyncContext asyncContext) {
-		Message message = new MsgAllUsersRequest(getAddress(), context.getDBServiceAddress(), asyncContext);
-        getMessageSystem().sendMessage(message);	
+	public void handleUserRequest(MessageContext messageContext) {
+		Message message = new MsgAllUsersRequest(getAddress(), context.getDBServiceAddress(), messageContext);
+        getMessageSystem().sendMessage(message);
+		
 	}
-	
+
 	@Override
-    public void handleUserRequest(AsyncContext asyncContext, Operation operation, UserDataSet user) {
+    public void handleUserRequest(MessageContext messageContext, Operation operation, UserDataSet user) {
 		Message message = null;
 		switch (operation) {
 			case SELECT:
-				message = new MsgUserRequestById(getAddress(), context.getDBServiceAddress(), asyncContext, user.getId());
+				message = new MsgUserRequestById(getAddress(), context.getDBServiceAddress(), messageContext, user.getId());
 				break;
 			case SAVE: 
-				message = new MsgSaveUserRequest(getAddress(), context.getDBServiceAddress(), asyncContext, user);
+				message = new MsgSaveUserRequest(getAddress(), context.getDBServiceAddress(), messageContext, user);
 				break;
 			case DELETE: 
-				message = new MsgDeleteUserRequest(getAddress(), context.getDBServiceAddress(), asyncContext, user);
+				message = new MsgDeleteUserRequest(getAddress(), context.getDBServiceAddress(), messageContext, user);
 				break;
 		}	
 		if (message != null) {
@@ -73,33 +73,29 @@ public class UIServiceImpl implements UIService {
     }
 
 	@Override
-	public void handleUserResponse(AsyncContext asyncContext, UserDataSet user) {
-		asyncContext.getRequest().setAttribute("user", user);
-		asyncContext.complete();		
+	public void handleUserResponse(MessageContext messageContext, UserDataSet user) {
+		messageContext.complete(user);		
 	}
 
 	@Override
-	public void handleUserResponse(AsyncContext asyncContext, List<UserDataSet> users) {
-		asyncContext.getRequest().setAttribute("users", users);
-	    asyncContext.complete();
+	public void handleUserResponse(MessageContext messageContext, List<UserDataSet> users) {
+		messageContext.complete(users);
 	}
 
 	@Override
-	public void handleUserResponse(AsyncContext asyncContext, String message) {
-		asyncContext.getRequest().setAttribute("message", message);
-	    asyncContext.complete();
+	public void handleUserResponse(MessageContext messageContext, String message) {
+	    messageContext.complete(message);
 	}
 	
 	@Override
-	public void handleCacheRequest(AsyncContext asyncContext) {
-		Message message = new MsgCacheParametersRequest(getAddress(), context.getDBServiceAddress(), asyncContext);
+	public void handleCacheRequest(MessageContext messageContext) {
+		Message message = new MsgCacheParametersRequest(getAddress(), context.getDBServiceAddress(), messageContext);
         getMessageSystem().sendMessage(message);		
 	}
 
 	@Override
-	public void handleCacheResponse(AsyncContext asyncContext, Map<String, String> cacheParameters) {
-		asyncContext.getRequest().setAttribute("cacheParameters", cacheParameters);
-	    asyncContext.complete();		
+	public void handleCacheResponse(MessageContext messageContext, Map<String, String> cacheParameters) {
+	    messageContext.complete(cacheParameters);		
 	}
 	
 	@Override

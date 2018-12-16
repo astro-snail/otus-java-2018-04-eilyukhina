@@ -53,7 +53,7 @@
 		</table>
 		<table>
 			<tr>
-				<td><a class="button secondary" href="">Back</a></td>
+				<td><a class="button secondary" href="${pageContext.request.contextPath}">Back</a></td>
 				<td><a class="button primary" href="cache-info">Refresh</a></td>
 			</tr>
 		</table>

@@ -30,7 +30,7 @@
 					<td><input type="password" id="password" name="password"/></td>				
 				</tr>
 				<tr>
-					<td><a class="button secondary" href="">Back</a></td>
+					<td><a class="button secondary" href="${pageContext.request.contextPath}">Back</a></td>
 					<td><input class="button primary" type="submit" value="Log In"></td>
 				</tr>
 			</table>

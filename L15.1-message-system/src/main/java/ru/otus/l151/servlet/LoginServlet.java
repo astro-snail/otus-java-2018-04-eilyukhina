@@ -28,7 +28,7 @@ public class LoginServlet extends HttpServlet {
 		} else {
 			// User authentication should be here - just assume that it is always successful
 
-			// Save username in session
+			// Save user name in session
 			request.getSession().setAttribute("username", username);
 			response.sendRedirect(request.getContextPath());
 		}

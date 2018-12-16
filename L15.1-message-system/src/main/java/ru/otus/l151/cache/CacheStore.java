@@ -38,8 +38,10 @@ public class CacheStore implements Cache {
 		
 		synchronized (elements) {
 			if (elements.size() == maxCapacity) {
-				Object firstKey = elements.keySet().iterator().next();
-				elements.remove(firstKey);
+				if (!elements.isEmpty()) {
+					Object firstKey = elements.keySet().iterator().next();
+					elements.remove(firstKey);
+				}	
 		    }
 			elements.put(key, new SoftReference<>(element));
 		}

@@ -28,10 +28,11 @@
 		<!-- List of users -->
 		<table>
 			<tr>
+				<th width="5%">ID</th>
 				<th width="25%">Name</th>
-				<th width="10%">Age</th>
+				<th width="5%">Age</th>
 				<th width="25%">Address</th>
-				<th width="20%" >Phone</th>
+				<th width="20%">Phone</th>
 				<th width="20%" colspan="2">Action</th>
 			</tr>
 			
@@ -50,6 +51,7 @@
 				</c:url>
 					
 				<tr>
+					<td>${user.id}</td>
 					<td>${user.name}</td>
 					<td>${user.age}</td>
 					<td>${user.address.street}</td>
@@ -65,7 +67,7 @@
 		</table>
 		<table>
 			<tr>
-				<td><a class="button secondary" href="">Back</a></td>
+				<td><a class="button secondary" href="${pageContext.request.contextPath}">Back</a></td>
 				<td><a class="button primary" href="${insertLink}">Add User</a></td>
 			</tr>
 		</table>

@@ -3,32 +3,31 @@ package ru.otus.l151.uiservice;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.AsyncContext;
-
 import ru.otus.l151.dataset.UserDataSet;
 import ru.otus.l151.messagesystem.Addressee;
+import ru.otus.l151.messagesystem.MessageContext;
 
 public interface UIService extends Addressee {
 	
 	void init();
 	
-	void handleUserRequest(AsyncContext asyncContext, Long id);
+	void handleUserRequest(MessageContext context, Long id);
 	
-	void handleUserRequest(AsyncContext asyncContext, String name);
+	void handleUserRequest(MessageContext context, String name);
 	
-	void handleUserRequest(AsyncContext asyncContext);
+	void handleUserRequest(MessageContext context);
 	
-	void handleUserRequest(AsyncContext asyncContext, Operation operation, UserDataSet user);
+	void handleUserRequest(MessageContext context, Operation operation, UserDataSet user);
 	
-	void handleUserResponse(AsyncContext asyncContext, UserDataSet user);
+	void handleUserResponse(MessageContext context, UserDataSet user);
 	
-	void handleUserResponse(AsyncContext asyncContext, List<UserDataSet> users);
+	void handleUserResponse(MessageContext context, List<UserDataSet> users);
 	
-	void handleUserResponse(AsyncContext asyncContext, String message);
+	void handleUserResponse(MessageContext context, String message);
 	
-	void handleCacheRequest(AsyncContext asyncContext);
+	void handleCacheRequest(MessageContext context);
 	
-	void handleCacheResponse(AsyncContext asyncContext, Map<String, String> cacheParameters);
+	void handleCacheResponse(MessageContext context, Map<String, String> cacheParameters);
 	
 	void shutdown();
 	
