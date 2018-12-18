@@ -1,8 +1,13 @@
 package ru.otus.l041;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Benchmark implements BenchmarkMBean {
 	
 	private volatile int size;
+	
+	private List<String> objects = new ArrayList<>();
 
 	@Override
 	public int getSize() {
@@ -14,17 +19,24 @@ public class Benchmark implements BenchmarkMBean {
 		this.size = size;
 	}
 	
-	public void run() {
+	public void run() throws Exception {
         System.out.println("Starting the loop");
+       
         while (true) {
-            int local = size;
-            Object[] array = new Object[local];
-            System.out.println("Array of size: " + array.length + " created");
+     	
+        	int local = size;
 
-            for (int i = 0; i < local; i++) {
-                array[i] = new String(new char[0]);
-            }
-            System.out.println("Created " + local + " objects.");
+        	for (int i = 0; i < local; i++) {
+        		objects.add(new String(new char[0]));
+        	}    
+        	
+        	Thread.sleep(5000);
+        	
+        	for (int i = local - 1; i <= local / 2; i--) {
+        		objects.remove(i);
+        	}
+        	
+        	Thread.sleep(5000);
         }
     }
 

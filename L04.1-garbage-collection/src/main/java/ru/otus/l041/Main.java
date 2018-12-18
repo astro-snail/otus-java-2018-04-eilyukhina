@@ -7,15 +7,18 @@ import javax.management.ObjectName;
 
 import ru.otus.l041.Benchmark;
 
+//-Xms256m
+//-Xmx512m 
+//-XX:+HeapDumpOnOutOfMemoryError
+//-XX:HeapDumpPath=${workspace_loc}
+
 public class Main {
 
 	public static void main(String[] args) throws Exception {
 		
 		System.out.println("Starting PID: " + ManagementFactory.getRuntimeMXBean().getName());
 
-        int size = 5 * 1000 * 1000;
-        //int size = 50 * 1000 * 1000;//for OOM with -Xms512m
-        //int size = 50 * 1000 * 100; //for small dump
+        int size = 1 * 1000 * 1000;
 
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
         ObjectName name = new ObjectName("ru.otus:type=Benchmark");
@@ -26,9 +29,5 @@ public class Main {
 
         mbean.setSize(size);
         mbean.run();
-
-        //Class<?> clazz = Object[].class;
-
 	}
-
 }
