@@ -25,9 +25,9 @@ public class SortProcess extends Thread {
 	private final static Logger logger = Logger.getLogger(SortProcess.class.getName());
 	
 	public SortProcess(CyclicBarrier cb, Callable<Boolean> callback, int[] numbers) {
-		this.numbers = numbers;
 		this.cb = cb;
 		this.callback = callback;
+		setNumbers(numbers);
 	}
 	
 	public int choosePivotSorted() {
@@ -123,6 +123,10 @@ public class SortProcess extends Thread {
 	public int[] getNumbers() {
 		return numbers;
 	}
+	
+	private void setNumbers(int[] numbers) {
+		this.numbers = numbers;
+	}
 
 	private void setData(int[] data) {
 		int[] base = subGroup == SubGroup.LOW ? low : high;
@@ -132,7 +136,7 @@ public class SortProcess extends Thread {
 		System.arraycopy(base, 0, mergedNumbers, 0, base.length);
 		System.arraycopy(data, 0, mergedNumbers, base.length, data.length);
 
-		numbers = mergedNumbers;
+		setNumbers(mergedNumbers);
 	}
 
 	private void merge() {
