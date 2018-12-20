@@ -5,6 +5,12 @@ import com.sun.management.GarbageCollectionNotificationInfo;
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.management.Notification;
 import javax.management.NotificationEmitter;
@@ -15,12 +21,21 @@ import javax.management.openmbean.CompositeData;
 @SuppressWarnings("restriction")
 public class GCMonitor {
 	
-	private static List<GarbageCollectorMXBean> gcBeans = ManagementFactory.getGarbageCollectorMXBeans();
+	private static final long PERIOD_MS = 60 * 1000;
+	private static final Logger logger = Logger.getLogger(GCMonitor.class.getName());
+	
+	private static final List<GarbageCollectorMXBean> gcBeans = ManagementFactory.getGarbageCollectorMXBeans();
+
+	private static Map<String, GCInfo> gcInfoMap = new HashMap<>(); 
 	
 	public static void init() {
 		
 		// Subscribe to garbage collector notifications
-		for (GarbageCollectorMXBean gcBean : gcBeans) {			
+		for (GarbageCollectorMXBean gcBean : gcBeans) {
+			
+			GCInfo gcInfo = new GCInfo(gcBean.getName(), "GC");
+			
+			gcInfoMap.put(gcBean.getName(), gcInfo);
 			
 			@SuppressWarnings("serial")			
 			NotificationFilter filter = new NotificationFilter() {
@@ -31,32 +46,44 @@ public class GCMonitor {
 			};
 
 			NotificationListener listener = new NotificationListener() {
-				
-				private long totalCount = 0;
-				private long totalDuration = 0;
-				
+
 				@Override
 				public void handleNotification(Notification notification, Object handback) {
 					CompositeData cd = (CompositeData) notification.getUserData(); 
 					GarbageCollectionNotificationInfo info = GarbageCollectionNotificationInfo.from(cd);
-						
-					System.out.println(info.getGcName() + ", action: " + info.getGcAction() + ", cause: " + info.getGcCause());
-					System.out.println("Memory before: " + info.getGcInfo().getMemoryUsageBeforeGc());
-					System.out.println("Memory after: " + info.getGcInfo().getMemoryUsageAfterGc());
-					System.out.println("Duration: " + info.getGcInfo().getDuration());
-					
-					totalCount++;
-					totalDuration += info.getGcInfo().getDuration();
-					
-					System.out.println("Total collection count: " + totalCount);
-					System.out.println("Total collection time: " + totalDuration);
+								
+					synchronized (gcInfo) {
+						gcInfo.addCount();
+						gcInfo.addDuration(info.getGcInfo().getDuration());
+					}
 				}
 			};
 			
 			NotificationEmitter emitter = (NotificationEmitter) gcBean;
 			emitter.addNotificationListener(listener, filter, null);
 			
-			System.out.println("Listening to: " + gcBean.getName());
+			logger.log(Level.INFO, "Listening to: " + gcBean.getName());
 		}	
+		
+		TimerTask task = new TimerTask() {
+				
+			@Override
+			public void run() {
+				for (GarbageCollectorMXBean gcBean : gcBeans) {
+					
+					GCInfo gcInfo = gcInfoMap.get(gcBean.getName());
+					
+					synchronized (gcInfo) {
+						logger.log(Level.INFO, gcInfo.toString());
+						gcInfo.reset();
+					}
+				}	
+			}
+		};	
+			
+		// Create timer as a daemon thread and schedule to run after 1 min every 1 min
+		Timer timer = new Timer(true);
+		timer.scheduleAtFixedRate(task, PERIOD_MS, PERIOD_MS);
+			
 	}
 }

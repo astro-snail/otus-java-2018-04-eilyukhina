@@ -20,7 +20,6 @@ public class Benchmark implements BenchmarkMBean {
 	}
 	
 	public void run() throws Exception {
-        System.out.println("Starting the loop");
        
         while (true) {
      	
@@ -37,6 +36,7 @@ public class Benchmark implements BenchmarkMBean {
         	}
         	
         	Thread.sleep(5000);
+        	
         }
     }
 
