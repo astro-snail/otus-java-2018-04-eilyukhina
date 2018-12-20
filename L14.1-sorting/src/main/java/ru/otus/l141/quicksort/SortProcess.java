@@ -10,7 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SortProcess extends Thread {
-	private int[] numbers;
+	private int[] numbers; // cannot make final since it changes during merge
 	private int[] low;
 	private int[] high;
 	private SubGroup subGroup;
@@ -19,8 +19,8 @@ public class SortProcess extends Thread {
 	
 	private volatile boolean partitioned = false;
 
-	private CyclicBarrier cb;
-	private Callable<Boolean> callback;
+	private final CyclicBarrier cb;
+	private final Callable<Boolean> callback;
 
 	private final static Logger logger = Logger.getLogger(SortProcess.class.getName());
 	

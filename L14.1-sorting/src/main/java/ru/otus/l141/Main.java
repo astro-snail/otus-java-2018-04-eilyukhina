@@ -17,12 +17,12 @@ public class Main {
 		return numberOfElements;
 	}
 
-	private static void doSort() {
-		SortProcessManager manager = new SortProcessManager(NUMBER_OF_THREADS, 0, getNumberOfElements());
+	private static void doSort(int numberOfElements) {
+		SortProcessManager manager = new SortProcessManager(NUMBER_OF_THREADS, 0, numberOfElements);
 		manager.run();
 	}
 
 	public static void main(String[] args) {
-		doSort();
+		doSort(getNumberOfElements());
 	}
 }
