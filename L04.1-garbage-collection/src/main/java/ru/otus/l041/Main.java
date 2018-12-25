@@ -21,19 +21,19 @@ import ru.otus.l041.Benchmark;
 public class Main {
 
 	public static void main(String[] args) throws Exception {
-		
+
 		System.out.println("Starting PID: " + ManagementFactory.getRuntimeMXBean().getName());
 
-        int size = 300 * 1000;
+		int size = 300 * 1000;
 
-        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-        ObjectName name = new ObjectName("ru.otus:type=Benchmark");
-        Benchmark mbean = new Benchmark();
-        mbs.registerMBean(mbean, name);
-        
-        GCMonitor.init();
+		MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+		ObjectName name = new ObjectName("ru.otus:type=Benchmark");
+		Benchmark mbean = new Benchmark();
+		mbs.registerMBean(mbean, name);
 
-        mbean.setSize(size);
-        mbean.run();
+		GCMonitor.init();
+
+		mbean.setSize(size);
+		mbean.run();
 	}
 }
