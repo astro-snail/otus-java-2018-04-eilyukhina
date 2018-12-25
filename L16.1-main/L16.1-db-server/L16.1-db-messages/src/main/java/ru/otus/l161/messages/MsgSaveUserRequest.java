@@ -5,7 +5,7 @@ import ru.otus.l161.dataset.UserDataSet;
 public class MsgSaveUserRequest {
 
 	private final UserDataSet user;
-	
+
 	public MsgSaveUserRequest(UserDataSet user) {
 		this.user = user;
 	}

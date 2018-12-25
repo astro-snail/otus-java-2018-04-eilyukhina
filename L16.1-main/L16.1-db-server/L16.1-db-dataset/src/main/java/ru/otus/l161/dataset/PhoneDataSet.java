@@ -14,32 +14,32 @@ import javax.persistence.Table;
 public class PhoneDataSet extends DataSet implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private String number;
 	private transient UserDataSet user;
-	
+
 	public PhoneDataSet() {
 		super();
 	}
-	
+
 	public PhoneDataSet(Long id, String number) {
 		this.setId(id);
 		this.setNumber(number);
 	}
-	
+
 	public PhoneDataSet(String number) {
 		this(null, number);
 	}
-	
+
 	@Column(name = "number")
 	public String getNumber() {
 		return number;
 	}
-	
+
 	public void setNumber(String number) {
 		this.number = number;
 	}
-	
+
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_id")
 	public UserDataSet getUser() {
@@ -49,21 +49,21 @@ public class PhoneDataSet extends DataSet implements Serializable {
 	public void setUser(UserDataSet user) {
 		this.user = user;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "Phone ID = " + getId() + ", number = " + getNumber();
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof PhoneDataSet)) {
 			return false;
 		}
-		PhoneDataSet other = (PhoneDataSet)obj;
+		PhoneDataSet other = (PhoneDataSet) obj;
 		return getId() != null && getId().equals(other.getId());
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return getId().intValue();

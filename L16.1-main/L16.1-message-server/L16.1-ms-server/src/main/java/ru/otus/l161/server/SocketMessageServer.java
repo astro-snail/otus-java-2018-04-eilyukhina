@@ -22,150 +22,151 @@ public class SocketMessageServer implements SocketMessageServerMBean {
 
 	private static final Logger logger = Logger.getLogger(SocketMessageServer.class.getName());
 
-    private static final int PORT = 5050;
+	private static final int PORT = 5050;
 
-    private ServerSocket serverSocket;
-    private final ExecutorService server;
-    private final ConcurrentMap<Address, MessageWorker> workers;
-    
-    private volatile boolean running = false;
-     
-    public SocketMessageServer() {
-        server = Executors.newFixedThreadPool(2);
-        workers = new ConcurrentHashMap<>();
-    }
+	private ServerSocket serverSocket;
+	private final ExecutorService server;
+	private final ConcurrentMap<Address, MessageWorker> workers;
 
-    public void start() {
-    	try {
-    		serverSocket = new ServerSocket(PORT);
-    		setRunning(true);
-    		logger.info("Server started on port: " + serverSocket.getLocalPort());
+	private volatile boolean running = false;
 
-    		server.execute(this::routeMessages);
-    		server.execute(this::acceptClients);
-    		
-    		startClients();
-    		
-    	} catch (IOException e) {
-    		logger.severe(e.getMessage());
-    		shutdown();
-    	}	
-    }
-     
-    private void acceptClients() {
-        while (running) {
-        	try {
-        		Socket socket = serverSocket.accept();
-        		Address address = new Address(socket.getInetAddress(), socket.getPort());
-        	
-        		SocketMessageWorker worker = new SocketMessageWorker(socket);
-        		worker.init();
-        		worker.addShutdownRegistration(() -> workers.remove(address));
-        		workers.put(address, worker);
-        		logger.info("Client connected on port: " + socket.getPort());
-        	} catch (IOException e) {
-        		logger.severe(e.getMessage());
-        	}
-        }
-    }
-    
-    private void routeMessages() {
-        while (running) {
-       		for (MessageWorker worker : workers.values()) {
-       			Message message = worker.poll();
-       			if (message != null) {
-       				
-       				logger.info("Message retrieved: " + message);
-       				
-       				try {
-       					Address messageReceiver = message.getTo();
+	public SocketMessageServer() {
+		server = Executors.newFixedThreadPool(2);
+		workers = new ConcurrentHashMap<>();
+	}
 
-       					if (workers.containsKey(messageReceiver)) {
-       						workers.get(messageReceiver).put(message);
-       						logger.info("Message routed to : " + messageReceiver);
-       					}
-        			} catch (InterruptedException e) {
-        				logger.severe(e.getMessage());
-        			}
-       			}	
-            }
-        }
-    }
-    
-    private void broadcastMessage(Message message) {
-       	for (MessageWorker worker : workers.values()) {
-       		try {
-       			worker.put(message);
-       			logger.info("Shutdown message sent");
-        	} catch (InterruptedException e) {
-        		logger.severe(e.getMessage());
-        	}
-        }
-    }
+	public void start() {
+		try {
+			serverSocket = new ServerSocket(PORT);
+			setRunning(true);
+			logger.info("Server started on port: " + serverSocket.getLocalPort());
 
-    @Override
-    public boolean isRunning() {
-        return running;
-    }
+			server.execute(this::routeMessages);
+			server.execute(this::acceptClients);
 
-    @Override
-    public void setRunning(boolean running) {
-        this.running = running;
-        
-        if (!running) {
-        	shutdown();
-        }
-    }
-    
-    private void shutdown() {
-    	broadcastMessage(new Message(null, null, new MsgShutdown()));
-    	shutdownClients();
-        server.shutdown();
-        try {
-        	serverSocket.close();
-        } catch (IOException e) {
-        	logger.severe(e.getMessage());
-        }
-    }
-    
-    private void startClients() {
-    	List<String[]> clientStartCommand = new ArrayList<>();
-    	clientStartCommand.add(new String[] {"java", "-jar", "../../L16.1-db-server/L16.1-db-service/target/db-service.jar"});
-    	clientStartCommand.add(new String[] {System.getenv("CATALINA_HOME") + "/bin/startup.bat"});
+			startClients();
 
-    	for (String[] command : clientStartCommand) {
-    		new Thread(new Runnable() {
+		} catch (IOException e) {
+			logger.severe(e.getMessage());
+			shutdown();
+		}
+	}
 
-				@Override
-				public void run() {
+	private void acceptClients() {
+		while (running) {
+			try {
+				Socket socket = serverSocket.accept();
+				Address address = new Address(socket.getInetAddress(), socket.getPort());
+
+				SocketMessageWorker worker = new SocketMessageWorker(socket);
+				worker.init();
+				worker.addShutdownRegistration(() -> workers.remove(address));
+				workers.put(address, worker);
+				logger.info("Client connected on port: " + socket.getPort());
+			} catch (IOException e) {
+				logger.severe(e.getMessage());
+			}
+		}
+	}
+
+	private void routeMessages() {
+		while (running) {
+			for (MessageWorker worker : workers.values()) {
+				Message message = worker.poll();
+				if (message != null) {
+
+					logger.info("Message retrieved: " + message);
+
 					try {
-	    				new ProcessRunnerImpl().start(command);
-	    				logger.info("Client started");
-	    			} catch (IOException e) {
-	    				logger.severe(e.getMessage());
-	    			}
-				}
-    		}).start();
-    	}
-    }
+						Address messageReceiver = message.getTo();
 
-    private void shutdownClients() {
-    	List<String[]> clientStopCommand = new ArrayList<>();
-    	clientStopCommand.add(new String[] {System.getenv("CATALINA_HOME") + "/bin/shutdown.bat"});
-    	
-    	for (String[] command : clientStopCommand) {
-    		new Thread(new Runnable() {
-				
+						if (workers.containsKey(messageReceiver)) {
+							workers.get(messageReceiver).put(message);
+							logger.info("Message routed to : " + messageReceiver);
+						}
+					} catch (InterruptedException e) {
+						logger.severe(e.getMessage());
+					}
+				}
+			}
+		}
+	}
+
+	private void broadcastMessage(Message message) {
+		for (MessageWorker worker : workers.values()) {
+			try {
+				worker.put(message);
+				logger.info("Shutdown message sent");
+			} catch (InterruptedException e) {
+				logger.severe(e.getMessage());
+			}
+		}
+	}
+
+	@Override
+	public boolean isRunning() {
+		return running;
+	}
+
+	@Override
+	public void setRunning(boolean running) {
+		this.running = running;
+
+		if (!running) {
+			shutdown();
+		}
+	}
+
+	private void shutdown() {
+		broadcastMessage(new Message(null, null, new MsgShutdown()));
+		shutdownClients();
+		server.shutdown();
+		try {
+			serverSocket.close();
+		} catch (IOException e) {
+			logger.severe(e.getMessage());
+		}
+	}
+
+	private void startClients() {
+		List<String[]> clientStartCommand = new ArrayList<>();
+		clientStartCommand
+				.add(new String[] { "java", "-jar", "../../L16.1-db-server/L16.1-db-service/target/db-service.jar" });
+		clientStartCommand.add(new String[] { System.getenv("CATALINA_HOME") + "/bin/startup.bat" });
+
+		for (String[] command : clientStartCommand) {
+			new Thread(new Runnable() {
+
 				@Override
 				public void run() {
 					try {
 						new ProcessRunnerImpl().start(command);
-	    				logger.info("Client stopped");
-	    			} catch (IOException e) {
-	    				logger.severe(e.getMessage());
-	    			}					
+						logger.info("Client started");
+					} catch (IOException e) {
+						logger.severe(e.getMessage());
+					}
 				}
 			}).start();
-    	}	
-    }
+		}
+	}
+
+	private void shutdownClients() {
+		List<String[]> clientStopCommand = new ArrayList<>();
+		clientStopCommand.add(new String[] { System.getenv("CATALINA_HOME") + "/bin/shutdown.bat" });
+
+		for (String[] command : clientStopCommand) {
+			new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					try {
+						new ProcessRunnerImpl().start(command);
+						logger.info("Client stopped");
+					} catch (IOException e) {
+						logger.severe(e.getMessage());
+					}
+				}
+			}).start();
+		}
+	}
 }

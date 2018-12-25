@@ -11,12 +11,13 @@ import javax.servlet.http.HttpServletResponse;
 public class StartServlet extends HttpServlet {
 
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String username = (String)request.getSession().getAttribute("username");
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		String username = (String) request.getSession().getAttribute("username");
 		if (username != null) {
 			request.setAttribute("message", "You are logged in as " + username);
 		}
 		request.getRequestDispatcher("/index.jsp").forward(request, response);
-	}	
+	}
 
 }

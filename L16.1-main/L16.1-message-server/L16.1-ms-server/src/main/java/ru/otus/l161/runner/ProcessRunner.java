@@ -6,8 +6,8 @@ public interface ProcessRunner {
 
 	void start(String[] command) throws IOException;
 
-    void stop();
+	void stop();
 
-    String getOutput();
-    
+	String getOutput();
+
 }
