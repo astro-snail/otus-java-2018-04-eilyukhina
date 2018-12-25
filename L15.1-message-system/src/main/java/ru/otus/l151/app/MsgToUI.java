@@ -8,18 +8,18 @@ import ru.otus.l151.messagesystem.MessageException;
 import ru.otus.l151.uiservice.UIService;
 
 public abstract class MsgToUI extends Message {
-	
+
 	public MsgToUI(Address from, Address to, MessageContext context) {
 		super(from, to, context);
 	}
-	
+
 	@Override
 	public void exec(Addressee addressee) throws MessageException {
 		if (addressee instanceof UIService) {
 			exec((UIService) addressee);
 		}
 	}
-	
+
 	public abstract void exec(UIService uiService) throws MessageException;
 
 }

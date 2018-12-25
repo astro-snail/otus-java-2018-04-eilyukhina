@@ -18,33 +18,34 @@ import ru.otus.l151.uiservice.UIService;
 
 @SuppressWarnings("serial")
 public class CacheInfoServlet extends HttpServlet {
-	
+
 	@Autowired
 	private UIService uiService;
-	
+
 	@Override
 	public void init() throws ServletException {
 		SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, getServletContext());
 	}
-		
+
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		if (LoginServlet.checkLoggedIn(request, response)) {
-			
-			AsyncContext asyncContext = request.startAsync(request, response);			
-			
+
+			AsyncContext asyncContext = request.startAsync(request, response);
+
 			MessageEventListener listener = new MessageEventListener() {
-				
+
 				@Override
 				public void messageReceived(MessageEvent event) {
 					asyncContext.getRequest().setAttribute("cacheParameters", event.getValue());
 					asyncContext.dispatch("/cache-info.jsp");
 				}
 			};
-			
+
 			MessageContext messageContext = new MessageContext();
 			messageContext.addListener(listener);
 			uiService.handleCacheRequest(messageContext);
 		}
-	}	
+	}
 }

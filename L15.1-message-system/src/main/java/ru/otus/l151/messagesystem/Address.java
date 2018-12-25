@@ -6,19 +6,19 @@ public class Address {
 
 	private static final AtomicInteger ID_GENERATOR = new AtomicInteger();
 	private final String id;
-	
+
 	public Address() {
 		id = String.valueOf(ID_GENERATOR.getAndIncrement());
 	}
-	
+
 	public Address(String id) {
 		this.id = id;
 	}
-	
+
 	public String getId() {
 		return id;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return id.hashCode();

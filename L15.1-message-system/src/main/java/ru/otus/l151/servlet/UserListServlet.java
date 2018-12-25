@@ -18,38 +18,40 @@ import ru.otus.l151.uiservice.UIService;
 
 @SuppressWarnings("serial")
 public class UserListServlet extends HttpServlet {
-	
+
 	@Autowired
 	private UIService uiService;
-	
+
 	@Override
 	public void init() throws ServletException {
 		SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, getServletContext());
 	}
-		
+
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		if (LoginServlet.checkLoggedIn(request, response)) {
-			
-			AsyncContext asyncContext = request.startAsync(request, response);			
-			
+
+			AsyncContext asyncContext = request.startAsync(request, response);
+
 			MessageEventListener listener = new MessageEventListener() {
-				
+
 				@Override
 				public void messageReceived(MessageEvent event) {
 					asyncContext.getRequest().setAttribute("users", event.getValue());
 					asyncContext.dispatch("/user-list.jsp");
 				}
 			};
-			
+
 			MessageContext messageContext = new MessageContext();
 			messageContext.addListener(listener);
 			uiService.handleUserRequest(messageContext);
-		}	
+		}
 	}
-	
+
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		doGet(request, response);
 	}
 }

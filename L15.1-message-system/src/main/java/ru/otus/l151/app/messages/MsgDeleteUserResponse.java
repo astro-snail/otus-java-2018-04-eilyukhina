@@ -6,9 +6,9 @@ import ru.otus.l151.messagesystem.MessageContext;
 import ru.otus.l151.uiservice.UIService;
 
 public class MsgDeleteUserResponse extends MsgToUI {
-	
+
 	private final String message;
-	
+
 	public MsgDeleteUserResponse(Address from, Address to, MessageContext context, String message) {
 		super(from, to, context);
 		this.message = message;

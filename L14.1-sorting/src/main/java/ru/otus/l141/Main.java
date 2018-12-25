@@ -7,10 +7,10 @@ import ru.otus.l141.quicksort.SortProcessManager;
 public class Main {
 	// Number of worker threads must be power of 2
 	private static final int NUMBER_OF_THREADS = 4;
-	
+
 	private static int getNumberOfElements() {
 		int numberOfElements;
-		
+
 		try (Scanner scanner = new Scanner(System.in)) {
 			numberOfElements = scanner.nextInt();
 		}

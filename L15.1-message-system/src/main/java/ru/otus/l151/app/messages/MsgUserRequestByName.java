@@ -10,9 +10,9 @@ import ru.otus.l151.messagesystem.MessageContext;
 import ru.otus.l151.messagesystem.MessageException;
 
 public class MsgUserRequestByName extends MsgToDB {
-	
+
 	private final String name;
-	
+
 	public MsgUserRequestByName(Address from, Address to, MessageContext context, String name) {
 		super(from, to, context);
 		this.name = name;

@@ -11,7 +11,7 @@ import ru.otus.l151.messagesystem.MessageContext;
 import ru.otus.l151.messagesystem.MessageException;
 
 public class MsgAllUsersRequest extends MsgToDB {
-	
+
 	public MsgAllUsersRequest(Address from, Address to, MessageContext context) {
 		super(from, to, context);
 	}

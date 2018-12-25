@@ -8,12 +8,12 @@ import java.util.logging.Logger;
 import ru.otus.l141.generator.DataGenerator;
 
 public class SortProcessManager {
-	private boolean shouldTerminate = false; 
-	private boolean ready = false; 
+	private boolean shouldTerminate = false;
+	private boolean ready = false;
 
 	private final SortProcess[] processes;
 	private int[] result = new int[0];
-	
+
 	private final static Logger logger = Logger.getLogger(SortProcessManager.class.getName());
 
 	public SortProcessManager(int count, int from, int to) {
@@ -21,16 +21,17 @@ public class SortProcessManager {
 	}
 
 	public SortProcessManager(int count, int[] unsorted) {
-		
+
 		logger.log(Level.INFO, "Unsorted: " + Arrays.toString(unsorted));
-				
+
 		int numberOfElements = unsorted.length;
 		int numberPerProcess = numberOfElements / count;
 
 		processes = new SortProcess[count];
-		
+
 		// Cyclic barrier to synchronise worker threads at the end of each iteration
-		// Before releasing worker threads, execute setReady(false) to make them wait until the next iteration is ready
+		// Before releasing worker threads, execute setReady(false) to make them wait
+		// until the next iteration is ready
 		CyclicBarrier cb = new CyclicBarrier(count, () -> setReady(false));
 
 		// Split data among worker threads
@@ -44,7 +45,7 @@ public class SortProcessManager {
 			processes[i] = new SortProcess(cb, () -> isReady(), Arrays.copyOfRange(unsorted, indexFrom, indexTo));
 		}
 	}
-	
+
 	private synchronized boolean isReady() {
 		while (!(ready || shouldTerminate)) {
 			try {
@@ -60,7 +61,7 @@ public class SortProcessManager {
 		this.ready = ready;
 		notifyAll();
 	}
-	
+
 	private synchronized void setShouldTerminate(boolean shouldTerminate) {
 		this.shouldTerminate = shouldTerminate;
 		notifyAll();
@@ -69,7 +70,7 @@ public class SortProcessManager {
 	public void run() {
 		quickSort();
 	}
-	
+
 	public int[] getResult() {
 		return result;
 	}
@@ -85,13 +86,13 @@ public class SortProcessManager {
 
 	private static int[] combine(int[] a, int[] b) {
 		int[] result = new int[a.length + b.length];
-		
+
 		System.arraycopy(a, 0, result, 0, a.length);
 		System.arraycopy(b, 0, result, a.length, b.length);
-		
+
 		return result;
-    }
-	
+	}
+
 	private synchronized void await() {
 		while (ready) {
 			try {
@@ -101,7 +102,7 @@ public class SortProcessManager {
 			}
 		}
 	}
-	
+
 	private void quickSort() {
 		int processCount = processes.length;
 		int groupSize = processes.length;
@@ -125,13 +126,13 @@ public class SortProcessManager {
 					high.setUpForIteration(SubGroup.HIGH, low, pivot);
 				}
 			}
-			
+
 			setReady(true);
 			await();
 
 			groupSize = groupSize / 2;
 		}
-		
+
 		setShouldTerminate(true);
 
 		// Combine all threads results
@@ -143,7 +144,7 @@ public class SortProcessManager {
 
 			}
 		}
-		
+
 		logger.log(Level.INFO, "Sorted: " + Arrays.toString(result));
 	}
 

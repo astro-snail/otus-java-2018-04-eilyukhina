@@ -14,11 +14,11 @@ import ru.otus.l151.dataset.UserDataSet;
 public class UserDAOHibernateImpl implements UserDAO {
 
 	private final Session session;
-	
+
 	public UserDAOHibernateImpl(final Session session) {
 		this.session = session;
 	}
-	
+
 	@Override
 	public void save(UserDataSet dataSet) {
 		session.saveOrUpdate(dataSet);
@@ -28,25 +28,25 @@ public class UserDAOHibernateImpl implements UserDAO {
 	public UserDataSet load(Long id) {
 		return session.load(UserDataSet.class, id);
 	}
-	
+
 	@Override
 	public UserDataSet loadByName(String name) {
 		CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<UserDataSet> criteria = builder.createQuery(UserDataSet.class);
-        Root<UserDataSet> from = criteria.from(UserDataSet.class);
-        criteria.where(builder.equal(from.get("name"), name));
-        Query<UserDataSet> query = session.createQuery(criteria);
-        return query.uniqueResult();
-    }
-	
+		CriteriaQuery<UserDataSet> criteria = builder.createQuery(UserDataSet.class);
+		Root<UserDataSet> from = criteria.from(UserDataSet.class);
+		criteria.where(builder.equal(from.get("name"), name));
+		Query<UserDataSet> query = session.createQuery(criteria);
+		return query.uniqueResult();
+	}
+
 	@Override
 	public List<UserDataSet> loadAll() {
 		CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<UserDataSet> criteria = builder.createQuery(UserDataSet.class);
-        criteria.from(UserDataSet.class);
-        return session.createQuery(criteria).list();
+		CriteriaQuery<UserDataSet> criteria = builder.createQuery(UserDataSet.class);
+		criteria.from(UserDataSet.class);
+		return session.createQuery(criteria).list();
 	}
-	
+
 	@Override
 	public void delete(UserDataSet dataSet) {
 		session.delete(dataSet);

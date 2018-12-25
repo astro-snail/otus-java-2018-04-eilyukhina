@@ -11,14 +11,14 @@ import ru.otus.l141.quicksort.SortProcessManager;
 class TestSort {
 	private static final int NUMBER_OF_THREADS = 4;
 	private static final int NUMBER_OF_ELEMENTS = 50;
-	
+
 	private SortProcessManager manager;
 	private int[] expected;
-	
+
 	@BeforeEach
 	void setUp() throws Exception {
 		manager = new SortProcessManager(NUMBER_OF_THREADS, 0, NUMBER_OF_ELEMENTS);
-		
+
 		expected = new int[NUMBER_OF_ELEMENTS];
 		for (int i = 0; i < expected.length; i++) {
 			expected[i] = i;

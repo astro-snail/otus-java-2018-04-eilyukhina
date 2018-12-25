@@ -8,7 +8,7 @@ import ru.otus.l151.messagesystem.MessageContext;
 import ru.otus.l151.messagesystem.MessageException;
 
 public abstract class MsgToDB extends Message {
-	
+
 	public MsgToDB(Address from, Address to, MessageContext context) {
 		super(from, to, context);
 	}
@@ -19,6 +19,6 @@ public abstract class MsgToDB extends Message {
 			exec((DBService) addressee);
 		}
 	}
-	
+
 	public abstract void exec(DBService dbService) throws MessageException;
 }

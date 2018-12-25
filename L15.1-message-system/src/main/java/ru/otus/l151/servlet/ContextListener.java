@@ -11,31 +11,31 @@ import ru.otus.l151.uiservice.UIService;
 import ru.otus.l151.messagesystem.MessageSystem;
 
 public class ContextListener implements ServletContextListener {
-	
+
 	@Autowired
 	private MessageSystem messageSystem;
-	
+
 	@Autowired
 	private UIService uiService;
-	
+
 	@Autowired
 	private DBService dbService;
 
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
-	    SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, event.getServletContext());
+		SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, event.getServletContext());
 
-       	dbService.init();
-       	uiService.init();
-       	
-       	messageSystem.start();
+		dbService.init();
+		uiService.init();
+
+		messageSystem.start();
 	}
 
 	@Override
 	public void contextDestroyed(ServletContextEvent event) {
 		try {
 			messageSystem.dispose();
-			
+
 			uiService.shutdown();
 			dbService.shutdown();
 		} catch (Exception e) {

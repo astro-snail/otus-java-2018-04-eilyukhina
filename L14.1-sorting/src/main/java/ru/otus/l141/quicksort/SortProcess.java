@@ -16,20 +16,20 @@ public class SortProcess extends Thread {
 	private SubGroup subGroup;
 	private SortProcess partner;
 	private int pivot;
-	
+
 	private volatile boolean partitioned = false;
 
 	private final CyclicBarrier cb;
 	private final Callable<Boolean> callback;
 
 	private final static Logger logger = Logger.getLogger(SortProcess.class.getName());
-	
+
 	public SortProcess(CyclicBarrier cb, Callable<Boolean> callback, int[] numbers) {
 		this.cb = cb;
 		this.callback = callback;
 		setNumbers(numbers);
 	}
-	
+
 	public int choosePivotSorted() {
 		if (numbers == null || numbers.length == 0) {
 			return -1;
@@ -54,14 +54,15 @@ public class SortProcess extends Thread {
 				index++;
 			}
 		}
-		
+
 		low = Arrays.copyOfRange(numbers, 0, index);
 		high = Arrays.copyOfRange(numbers, index, numbers.length);
 
-		logger.log(Level.INFO, "Thread ID: " + Thread.currentThread().getId() + " " + subGroup.toString() + " pivot: " + pivot + " low / high " + Arrays.toString(low) + " / " + Arrays.toString(high));
+		logger.log(Level.INFO, "Thread ID: " + Thread.currentThread().getId() + " " + subGroup.toString() + " pivot: "
+				+ pivot + " low / high " + Arrays.toString(low) + " / " + Arrays.toString(high));
 
 		partitioned = true;
-		
+
 		synchronized (this) {
 			notifyAll();
 		}
@@ -112,10 +113,10 @@ public class SortProcess extends Thread {
 				try {
 					wait();
 				} catch (InterruptedException e) {
-				
+
 				}
 			}
-		}	
+		}
 		partitioned = false;
 		return subGroup == SubGroup.LOW ? high : low;
 	}
@@ -123,7 +124,7 @@ public class SortProcess extends Thread {
 	public int[] getNumbers() {
 		return numbers;
 	}
-	
+
 	private void setNumbers(int[] numbers) {
 		this.numbers = numbers;
 	}
@@ -151,7 +152,7 @@ public class SortProcess extends Thread {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
-	
+
 	/**
 	 * Wait for all worker threads to finish current iteration
 	 */
@@ -164,18 +165,18 @@ public class SortProcess extends Thread {
 
 		}
 	}
-	
+
 	private void quickSort(boolean preSort) throws Exception {
 		if (preSort) {
 			quickSortSequential(0, numbers.length);
 		}
-		
+
 		while (callback.call()) {
 			partition();
 			merge();
 			await();
 		}
-		
+
 		quickSortSequential(0, numbers.length);
 	}
 }

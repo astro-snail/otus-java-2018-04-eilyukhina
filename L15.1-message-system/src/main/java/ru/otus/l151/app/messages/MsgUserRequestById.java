@@ -10,9 +10,9 @@ import ru.otus.l151.messagesystem.MessageContext;
 import ru.otus.l151.messagesystem.MessageException;
 
 public class MsgUserRequestById extends MsgToDB {
-	
+
 	private final Long id;
-	
+
 	public MsgUserRequestById(Address from, Address to, MessageContext context, Long id) {
 		super(from, to, context);
 		this.id = id;

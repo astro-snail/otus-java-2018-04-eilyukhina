@@ -9,29 +9,29 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MessageSystem {
-	
+
 	private static final Logger logger = Logger.getLogger(MessageSystem.class.getName());
-	
+
 	private final Map<Address, Addressee> addresses;
 	private final Map<Address, LinkedBlockingQueue<Message>> messages;
 	private final List<Thread> workers;
-	
+
 	public MessageSystem() {
 		this.workers = new ArrayList<>();
 		this.addresses = new HashMap<>();
 		this.messages = new HashMap<>();
 	}
-	
+
 	public Address registerAddressee(Addressee addressee) {
 		return registerAddressee(addressee, new Address());
 	}
-	
+
 	public Address registerAddressee(Addressee addressee, Address address) {
 		addresses.put(address, addressee);
 		messages.put(address, new LinkedBlockingQueue<>());
 		return address;
 	}
-	
+
 	public void sendMessage(Message message) {
 		messages.get(message.getTo()).add(message);
 	}
@@ -51,15 +51,15 @@ public class MessageSystem {
 					} catch (InterruptedException e) {
 						logger.log(Level.INFO, "Thread interrupted. Finishing: " + name);
 						return;
-					}	
-				}			
+					}
+				}
 			});
 			thread.setName(name);
 			thread.start();
 			workers.add(thread);
-		}	
+		}
 	}
-	
+
 	public void dispose() {
 		workers.forEach(Thread::interrupt);
 	}

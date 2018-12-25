@@ -12,7 +12,7 @@ import ru.otus.l151.messagesystem.MessageException;
 public class MsgSaveUserRequest extends MsgToDB {
 
 	private final UserDataSet user;
-	
+
 	public MsgSaveUserRequest(Address from, Address to, MessageContext context, UserDataSet user) {
 		super(from, to, context);
 		this.user = user;

@@ -1,7 +1,7 @@
 package ru.otus.l151.dataset;
 
 public class DataSetKey {
-	
+
 	private final Class<? extends DataSet> type;
 	private final Long id;
 
@@ -9,7 +9,7 @@ public class DataSetKey {
 		this.type = type;
 		this.id = id;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return type.hashCode() + id.hashCode();
@@ -20,7 +20,7 @@ public class DataSetKey {
 		if (!(obj instanceof DataSetKey)) {
 			return false;
 		}
-		DataSetKey other = (DataSetKey)obj;
+		DataSetKey other = (DataSetKey) obj;
 		return type.equals(other.type) && id.equals(other.id);
 	}
 }
