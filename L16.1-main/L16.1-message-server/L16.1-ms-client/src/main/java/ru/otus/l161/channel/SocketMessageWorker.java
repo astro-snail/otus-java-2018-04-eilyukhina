@@ -26,7 +26,7 @@ public class SocketMessageWorker implements MessageWorker {
 	private final ExecutorService executor;
 	private final Socket socket;
 
-	private final List<Runnable> shutdownRegistratons;
+	private final List<Runnable> shutdownRegistrations;
 
 	public SocketMessageWorker(Address server, Address client) throws IOException {
 		this(new Socket(server.getHost(), server.getPort(), client.getHost(), client.getPort()));
@@ -35,7 +35,7 @@ public class SocketMessageWorker implements MessageWorker {
 	public SocketMessageWorker(Socket socket) {
 		this.socket = socket;
 		this.executor = Executors.newFixedThreadPool(WORKER_COUNT);
-		this.shutdownRegistratons = new ArrayList<>();
+		this.shutdownRegistrations = new ArrayList<>();
 	}
 
 	public void init() {
@@ -60,8 +60,8 @@ public class SocketMessageWorker implements MessageWorker {
 
 	@Override
 	public void close() {
-		shutdownRegistratons.forEach(Runnable::run);
-		shutdownRegistratons.clear();
+		shutdownRegistrations.forEach(Runnable::run);
+		shutdownRegistrations.clear();
 
 		executor.shutdownNow();
 		try {
@@ -72,7 +72,7 @@ public class SocketMessageWorker implements MessageWorker {
 	}
 
 	public void addShutdownRegistration(Runnable runnable) {
-		shutdownRegistratons.add(runnable);
+		shutdownRegistrations.add(runnable);
 	}
 
 	public boolean isClosed() {
