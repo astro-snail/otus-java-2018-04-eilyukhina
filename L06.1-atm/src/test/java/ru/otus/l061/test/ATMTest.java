@@ -14,7 +14,7 @@ import ru.otus.l061.atm.ATM;
 import ru.otus.l061.denomination.Denomination;
 
 class ATMTest {
-	
+
 	ATM atm;
 
 	@BeforeAll
@@ -38,11 +38,11 @@ class ATMTest {
 	@Test
 	void testGetBalance() {
 		int expectedBalance = 0;
-		for (Denomination denomination: Denomination.values()) {
+		for (Denomination denomination : Denomination.values()) {
 			expectedBalance += denomination.getNominal() * ATM.BANKNOTES_INITIAL_COUNT;
 		}
 		assertEquals(expectedBalance, atm.getBalance());
-		
+
 		atm.dispense(atm.getBalance());
 		assertEquals(0, atm.getBalance());
 	}
@@ -50,21 +50,21 @@ class ATMTest {
 	@Test
 	void testDispense() {
 		int amount = 3400;
-		
+
 		int balanceBefore = atm.getBalance();
 		Map<Denomination, Integer> banknotesToDispense = atm.dispense(amount);
 		int balanceAfter = atm.getBalance();
-		
-		assertEquals(balanceBefore, balanceAfter + amount); 
-		
+
+		assertEquals(balanceBefore, balanceAfter + amount);
+
 		assertTrue(banknotesToDispense.containsKey(Denomination.TWO_THOUSAND));
 		int count = banknotesToDispense.get(Denomination.TWO_THOUSAND);
 		assertEquals(1, count);
-		
+
 		assertTrue(banknotesToDispense.containsKey(Denomination.ONE_THOUSAND));
 		count = banknotesToDispense.get(Denomination.ONE_THOUSAND);
 		assertEquals(1, count);
-		
+
 		assertTrue(banknotesToDispense.containsKey(Denomination.TWO_HUNDRED));
 		count = banknotesToDispense.get(Denomination.TWO_HUNDRED);
 		assertEquals(2, count);
@@ -72,12 +72,12 @@ class ATMTest {
 
 	@Test
 	void testAccept() {
-		for (Denomination denomination : Denomination.values() ) {
-			for (int count = 0; count < 10; count ++) {
+		for (Denomination denomination : Denomination.values()) {
+			for (int count = 0; count < 10; count++) {
 				int balanceBefore = atm.getBalance();
 				atm.accept(denomination, count);
 				int balanceAfter = atm.getBalance();
-		
+
 				assertEquals(balanceBefore + denomination.getNominal() * count, balanceAfter);
 			}
 		}

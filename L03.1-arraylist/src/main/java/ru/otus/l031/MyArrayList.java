@@ -11,14 +11,14 @@ public class MyArrayList<E> implements List<E> {
 
 	private static final Object[] EMPTY_LIST = {};
 	private static final int CAPACITY_INCREMENT = 10;
-	
+
 	private Object[] elements;
 	private int size;
-	
+
 	public MyArrayList() {
 		elements = EMPTY_LIST;
 	}
-	
+
 	public MyArrayList(int capacity) {
 		if (capacity > 0) {
 			elements = new Object[capacity];
@@ -28,22 +28,22 @@ public class MyArrayList<E> implements List<E> {
 			throw new IllegalArgumentException("Illegal capacity: " + capacity);
 		}
 	}
-	
+
 	public MyArrayList(Collection<? extends E> c) {
 		elements = c.toArray();
 		size = elements.length;
 	}
-	
+
 	private void checkIndex(int index) {
 		if (index < 0 || index >= size) {
 			throw new IndexOutOfBoundsException("Index " + index + " is out of bounds");
 		}
 	}
-	
+
 	private void increaseCapacity(int newCapacity) {
 		elements = Arrays.copyOf(elements, newCapacity);
 	}
-	
+
 	@Override
 	public int size() {
 		return size;
@@ -73,7 +73,7 @@ public class MyArrayList<E> implements List<E> {
 	@Override
 	public Object[] toArray() {
 		Object[] copy = new Object[size];
-		
+
 		for (int i = 0; i < copy.length; i++) {
 			copy[i] = elements[i];
 		}
@@ -84,7 +84,7 @@ public class MyArrayList<E> implements List<E> {
 	@Override
 	public <T> T[] toArray(T[] a) {
 		T[] copy = a.length < size ? Arrays.copyOf(a, size) : a;
-				
+
 		for (int i = 0; i < size; i++) {
 			copy[i] = (T) elements[i];
 		}
@@ -93,7 +93,7 @@ public class MyArrayList<E> implements List<E> {
 			for (int i = size; i < a.length; i++) {
 				copy[i] = null;
 			}
-		}	
+		}
 		return copy;
 	}
 
@@ -131,12 +131,13 @@ public class MyArrayList<E> implements List<E> {
 		if (c.size() == 0) {
 			return false;
 		}
-		
+
 		Object[] containElements = c.toArray();
 		for (int i = 0; i < containElements.length; i++) {
 			if (!contains(containElements[i])) {
 				return false;
-			};
+			}
+			;
 		}
 		return true;
 	}
@@ -146,12 +147,12 @@ public class MyArrayList<E> implements List<E> {
 		if (c.size() == 0) {
 			return false;
 		}
-		
+
 		Object[] addElements = c.toArray();
-		
+
 		int capacity = elements.length;
 		int newCapacity = size + addElements.length;
-		
+
 		if (capacity < newCapacity) {
 			increaseCapacity(newCapacity);
 		}
@@ -165,16 +166,16 @@ public class MyArrayList<E> implements List<E> {
 	@Override
 	public boolean addAll(int index, Collection<? extends E> c) {
 		checkIndex(index);
-		
+
 		if (c.size() == 0) {
 			return false;
 		}
-		
+
 		Object[] addElements = c.toArray();
-		
+
 		int capacity = elements.length;
 		int newCapacity = size + addElements.length;
-		
+
 		if (capacity < newCapacity) {
 			increaseCapacity(newCapacity);
 		}
@@ -195,7 +196,7 @@ public class MyArrayList<E> implements List<E> {
 		}
 
 		boolean result = false;
-		
+
 		Object[] removeElements = c.toArray();
 		for (int i = 0; i < removeElements.length; i++) {
 			while (remove(removeElements[i])) {
@@ -208,7 +209,7 @@ public class MyArrayList<E> implements List<E> {
 	@Override
 	public boolean retainAll(Collection<?> c) {
 		int oldSize = size;
-		
+
 		if (c.size() == 0) {
 			clear();
 		} else {
@@ -219,9 +220,9 @@ public class MyArrayList<E> implements List<E> {
 				} else {
 					i++;
 				}
-			}	
+			}
 		}
-	    return (oldSize != size);	
+		return (oldSize != size);
 	}
 
 	@Override
@@ -278,7 +279,7 @@ public class MyArrayList<E> implements List<E> {
 		while (i < size && !result) {
 			result = (o == null ? elements[i] == null : o.equals(elements[i]));
 			i++;
-		}		
+		}
 		return (result ? i - 1 : -1);
 	}
 
@@ -309,49 +310,49 @@ public class MyArrayList<E> implements List<E> {
 	public ListIterator<E> listIterator(int index) {
 		return new MyListIterator(index);
 	}
-	
+
 	static void checkIndexRange(int fromIndex, int toIndex, int size) {
 		if (fromIndex < 0)
-            throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);
-        if (toIndex > size)
-            throw new IndexOutOfBoundsException("toIndex = " + toIndex);
-        if (fromIndex > toIndex)
-            throw new IllegalArgumentException("fromIndex(" + fromIndex + ") > toIndex(" + toIndex + ")");
+			throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);
+		if (toIndex > size)
+			throw new IndexOutOfBoundsException("toIndex = " + toIndex);
+		if (fromIndex > toIndex)
+			throw new IllegalArgumentException("fromIndex(" + fromIndex + ") > toIndex(" + toIndex + ")");
 	}
 
 	@Override
 	public List<E> subList(int fromIndex, int toIndex) {
 		checkIndexRange(fromIndex, toIndex, size);
 		return new MySubList(this, fromIndex, toIndex);
-		//throw new UnsupportedOperationException("subList");
+		// throw new UnsupportedOperationException("subList");
 	}
-	
+
 	private class MySubList extends MyArrayList<E> {
 		private final List<E> parent;
 		private final int fromIndex;
 		private final int toIndex;
-		
+
 		MySubList(MyArrayList<E> parent, int fromIndex, int toIndex) {
 			this.parent = parent;
 			this.fromIndex = fromIndex;
 			this.toIndex = toIndex;
 		}
-		
+
 	}
 
 	private class MyListIterator implements ListIterator<E> {
-		
+
 		int cursor;
 		int lastRet = -1;
-		
+
 		MyListIterator() {
-			
+
 		}
 
 		MyListIterator(int index) {
 			cursor = index;
 		}
-		
+
 		@Override
 		public boolean hasNext() {
 			return cursor != size;
@@ -369,17 +370,17 @@ public class MyArrayList<E> implements List<E> {
 			lastRet = i;
 			return (E) elements[i];
 		}
-		
+
 		@Override
 		public void remove() {
 			if (lastRet < 0) {
 				throw new IllegalStateException();
 			}
-			MyArrayList.this.remove(lastRet);	
+			MyArrayList.this.remove(lastRet);
 			cursor = lastRet;
 			lastRet = -1;
 		}
-		
+
 		@Override
 		public boolean hasPrevious() {
 			return cursor != 0;
@@ -408,13 +409,12 @@ public class MyArrayList<E> implements List<E> {
 			return cursor - 1;
 		}
 
-
 		@Override
 		public void set(E e) {
 			if (lastRet < 0) {
 				throw new IllegalStateException();
 			}
-			MyArrayList.this.set(lastRet, e);	
+			MyArrayList.this.set(lastRet, e);
 		}
 
 		@Override
@@ -422,8 +422,8 @@ public class MyArrayList<E> implements List<E> {
 			int i = cursor;
 			MyArrayList.this.add(i, e);
 			cursor = i + 1;
-			lastRet = -1;			
+			lastRet = -1;
 		}
-		
+
 	}
 }

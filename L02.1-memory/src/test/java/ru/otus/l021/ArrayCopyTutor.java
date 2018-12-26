@@ -1,11 +1,12 @@
 package ru.otus.l021;
+
 import org.junit.Test;
 
 /**
- * Данный класс делает то же, что делает стандартный ArrayList:
- * увеличивает размер массива, когда массив заполнен.
+ * Данный класс делает то же, что делает стандартный ArrayList: увеличивает
+ * размер массива, когда массив заполнен.
  * 
- * Реализуйте метод deleteAnimal(int position) 
+ * Реализуйте метод deleteAnimal(int position)
  *
  */
 public class ArrayCopyTutor {
@@ -19,7 +20,7 @@ public class ArrayCopyTutor {
 	}
 
 	public void addAnimal(String animal) {
-		if (animals_size>=animals_capacity) {
+		if (animals_size >= animals_capacity) {
 			expandAnimalsArray();
 		}
 		animals[animals_size] = animal;
@@ -35,38 +36,38 @@ public class ArrayCopyTutor {
 	}
 
 	public void insertAnimal(int position, String animal) {
-		if (position<0 || position>animals_size-1) {
+		if (position < 0 || position > animals_size - 1) {
 			throw new ArrayIndexOutOfBoundsException();
 		}
-		if (position==animals_size-1) {
+		if (position == animals_size - 1) {
 			addAnimal(animal);
 		} else {
-			if (animals_size>=animals_capacity) {
+			if (animals_size >= animals_capacity) {
 				expandAnimalsArray();
 			}
-			System.arraycopy(animals, position, animals, position+1, animals_size-position);
+			System.arraycopy(animals, position, animals, position + 1, animals_size - position);
 			animals[position] = animal;
 			animals_size++;
 		}
 	}
-	
+
 	public void deleteAnimal(int position) {
 		if (position < 0 || position > animals_size - 1) {
 			throw new ArrayIndexOutOfBoundsException();
 		}
 		if (position != animals_size - 1) {
-			System.arraycopy(animals, position + 1, animals, position, animals_size - position - 1); 
+			System.arraycopy(animals, position + 1, animals, position, animals_size - position - 1);
 		}
 		animals[animals_size - 1] = null;
 		animals_size--;
 	}
 
 	public void showAnimals() {
-		for (int i=0;i<animals_size; i++) {
-			log(i+") "+animals[i]);
+		for (int i = 0; i < animals_size; i++) {
+			log(i + ") " + animals[i]);
 		}
 	}
-	
+
 	@Test
 	public void testAnimals() {
 		addAnimal("Лошадь");
@@ -86,5 +87,5 @@ public class ArrayCopyTutor {
 		deleteAnimal(5);
 		showAnimals();
 	}
-	
+
 }

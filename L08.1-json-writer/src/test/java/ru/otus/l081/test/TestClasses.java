@@ -28,8 +28,8 @@ class TestObjects {
 }
 
 class TestArrays {
-	int[][] matrix = {{5, 3, 10}, {4, 9}, {7, 23}};
-	String[] names = {"John", "Jane", "Judy"};
+	int[][] matrix = { { 5, 3, 10 }, { 4, 9 }, { 7, 23 } };
+	String[] names = { "John", "Jane", "Judy" };
 }
 
 class TestCollections {

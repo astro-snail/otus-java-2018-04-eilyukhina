@@ -12,7 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class MyArrayListTest {
-	
+
 	List<String> myList;
 	List<String> myCopyList;
 
@@ -58,7 +58,7 @@ public class MyArrayListTest {
 		assertEquals("one", myArray[0]);
 		assertEquals("two", myArray[1]);
 		assertEquals("three", myArray[2]);
-		assertEquals("four", myArray[3]);	
+		assertEquals("four", myArray[3]);
 	}
 
 	@Test
@@ -67,7 +67,7 @@ public class MyArrayListTest {
 		assertEquals("one", myArray[0]);
 		assertEquals("two", myArray[1]);
 		assertEquals("three", myArray[2]);
-		assertEquals("four", myArray[3]);	
+		assertEquals("four", myArray[3]);
 	}
 
 	@Test
@@ -212,7 +212,7 @@ public class MyArrayListTest {
 	public void testSubListInvalidRange() {
 		myList.subList(myList.size(), 0);
 	}
-	
+
 	@Test(expected = IndexOutOfBoundsException.class)
 	public void testSubListInvalidIndex() {
 		myList.subList(-1, myList.size());

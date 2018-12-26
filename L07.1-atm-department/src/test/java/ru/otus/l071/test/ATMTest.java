@@ -14,7 +14,7 @@ import ru.otus.l071.denomination.Denomination;
 import ru.otus.l071.department.ATMDepartment;
 
 class ATMTest {
-	
+
 	ATMDepartment department;
 
 	@BeforeAll
@@ -28,13 +28,13 @@ class ATMTest {
 	@BeforeEach
 	void setUp() throws Exception {
 		department = new ATMDepartment("ATM Department");
-		
+
 		ATM atm1 = new ATM(1, 5, Denomination.ONE_THOUSAND);
 		department.add(atm1);
-				
+
 		ATM atm2 = new ATM(2, 10, Denomination.FIVE_HUNDRED);
 		department.add(atm2);
-				
+
 		ATM atm3 = new ATM(3, 10, Denomination.FIVE_THOUSAND);
 		department.add(atm3);
 	}
@@ -56,17 +56,18 @@ class ATMTest {
 	@Test
 	void testRestore() {
 		int expectedBalance = department.getBalance();
-		
+
 		for (Component atm : department.getChildren()) {
 			try {
-				((ATM)atm).dispense(5000);
-			} catch (RuntimeException e) {}
+				((ATM) atm).dispense(5000);
+			} catch (RuntimeException e) {
+			}
 		}
-		
+
 		assertNotEquals(expectedBalance, department.getBalance());
-		
+
 		department.restore();
-		
+
 		assertEquals(expectedBalance, department.getBalance());
 	}
 }

@@ -11,7 +11,7 @@ import com.google.gson.Gson;
 import ru.otus.l081.writer.JsonObjectWriter;
 
 class JsonObjectWriterTest {
-	
+
 	JsonObjectWriter writer;
 	Gson gson;
 
@@ -32,19 +32,19 @@ class JsonObjectWriterTest {
 		TestPrimitives object = new TestPrimitives();
 		assertEquals(gson.toJson(object), writer.writeToJson(object));
 	}
-	
+
 	@Test
 	void testWriteToJsonObjects() {
 		TestObjects object = new TestObjects();
 		assertEquals(gson.toJson(object), writer.writeToJson(object));
 	}
-	
+
 	@Test
 	void testWriteToJsonArrays() {
 		TestArrays object = new TestArrays();
 		assertEquals(gson.toJson(object), writer.writeToJson(object));
 	}
-	
+
 	@Test
 	void testWriteToJsonCollections() {
 		TestCollections object = new TestCollections();

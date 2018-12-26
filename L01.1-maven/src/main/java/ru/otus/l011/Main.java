@@ -8,17 +8,17 @@ import org.apache.commons.collections4.CollectionUtils;
 public class Main {
 
 	public static void main(String[] args) {
-		
+
 		Integer[] numbers = new Integer[Short.MAX_VALUE * 10];
-		
+
 		for (int i = 0; i < numbers.length; i++) {
 			numbers[i] = i;
 		}
-	
+
 		System.out.println("First number: " + numbers[0]);
-		
+
 		CollectionUtils.reverseArray(numbers);
-		
+
 		System.out.println("First number reversed: " + numbers[0]);
 
 	}
