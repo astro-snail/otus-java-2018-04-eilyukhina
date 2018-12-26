@@ -6,7 +6,7 @@ import java.util.List;
 
 @FunctionalInterface
 public interface ResultSetHandler<T> {
-	
+
 	List<T> handle(ResultSet rs) throws SQLException;
 
 }

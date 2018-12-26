@@ -12,14 +12,15 @@ import ru.otus.l101.dataset.DataSet;
 import ru.otus.l101.dao.handler.*;
 
 public class QueryExecutor {
-	
+
 	private Connection connection;
-	
+
 	public QueryExecutor(Connection connection) {
 		this.connection = connection;
 	}
 
-	public <T extends DataSet> List<T> executeQuery(String sql, ResultSetHandler<T> handler, Object... params) throws SQLException {
+	public <T extends DataSet> List<T> executeQuery(String sql, ResultSetHandler<T> handler, Object... params)
+			throws SQLException {
 		try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 			prepare(stmt, params);
 			ResultSet rs = stmt.executeQuery();
@@ -42,29 +43,28 @@ public class QueryExecutor {
 			return rowsAffected;
 		}
 	}
-	
-    private void prepare(PreparedStatement stmt, Object... params) throws SQLException {
-    	ParameterMetaData metadata = stmt.getParameterMetaData();
-    	int count = metadata.getParameterCount();
-    	if (count != params.length) {
-    		throw new SQLException("Wrong number of parameters");
-    	}
-    	for (int i = 0; i < count; i++) {
-    		stmt.setObject(i + 1, params[i]);
-    	}
-    }
-    
-    private Object[] getParams(Object obj, String[] names) throws SQLException {
-    	Object[] params = new Object[names.length];
-    	try {
-    		for (int i = 0; i < names.length; i++) {
-    			params[i] = ObjectHelper.getValueByName(obj, names[i]);
-    		}
-    	} catch (Exception e) {
-    		throw new SQLException(e);
-    	}
-    	return params;
-    }
+
+	private void prepare(PreparedStatement stmt, Object... params) throws SQLException {
+		ParameterMetaData metadata = stmt.getParameterMetaData();
+		int count = metadata.getParameterCount();
+		if (count != params.length) {
+			throw new SQLException("Wrong number of parameters");
+		}
+		for (int i = 0; i < count; i++) {
+			stmt.setObject(i + 1, params[i]);
+		}
+	}
+
+	private Object[] getParams(Object obj, String[] names) throws SQLException {
+		Object[] params = new Object[names.length];
+		try {
+			for (int i = 0; i < names.length; i++) {
+				params[i] = ObjectHelper.getValueByName(obj, names[i]);
+			}
+		} catch (Exception e) {
+			throw new SQLException(e);
+		}
+		return params;
+	}
 
 }
-

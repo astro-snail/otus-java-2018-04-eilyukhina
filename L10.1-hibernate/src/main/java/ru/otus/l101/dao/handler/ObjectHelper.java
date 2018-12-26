@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import java.sql.SQLException;
 
 public class ObjectHelper {
-	
+
 	public static <T> Object getValueByName(T object, String name) throws SQLException {
 		Object value = null;
 		try {
@@ -18,15 +18,15 @@ public class ObjectHelper {
 			field.setAccessible(true);
 			if (names.length == 1) {
 				value = field.get(object);
-			} else {	
+			} else {
 				value = ObjectHelper.getValueByName(field.get(object), names[1]);
 			}
 		} catch (Exception e) {
 			throw new SQLException(e);
-		}	
+		}
 		return value;
 	}
-	
+
 	public static <T> void setValueByName(T object, String name, Object value) throws SQLException {
 		try {
 			Field field = null;
@@ -39,13 +39,13 @@ public class ObjectHelper {
 			field.setAccessible(true);
 			if (names.length == 1) {
 				field.set(object, value);
-			} else {	
+			} else {
 				Object subObject = field.getType().newInstance();
 				ObjectHelper.setValueByName(subObject, names[1], value);
 				field.set(object, subObject);
 			}
 		} catch (Exception e) {
 			throw new SQLException(e);
-		}	
+		}
 	}
 }

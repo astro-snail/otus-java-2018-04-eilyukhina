@@ -14,15 +14,16 @@ import ru.otus.l121.dataset.DataSetKey;
 
 @SuppressWarnings("serial")
 public class CacheInfoServlet extends HttpServlet {
-	
+
 	private final Cache<DataSetKey, DataSet> cache;
-	
+
 	public CacheInfoServlet(Cache<DataSetKey, DataSet> cache) {
 		this.cache = cache;
 	}
-	
+
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// If user has not logged in - redirect to login page
 		if (request.getSession().getAttribute("username") == null) {
 			response.sendRedirect(request.getContextPath() + "/login");
@@ -34,9 +35,9 @@ public class CacheInfoServlet extends HttpServlet {
 			request.setAttribute("cacheSize", cache.getSize());
 			request.setAttribute("hitCount", cache.getHitCount());
 			request.setAttribute("missCount", cache.getMissCount());
-			
+
 			RequestDispatcher dispatcher = request.getRequestDispatcher("/cache-info.jsp");
 			dispatcher.forward(request, response);
 		}
-	}	
+	}
 }

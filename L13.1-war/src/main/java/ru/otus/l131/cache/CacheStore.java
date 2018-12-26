@@ -10,50 +10,50 @@ import java.util.TimerTask;
 import java.util.function.ToLongFunction;
 
 public class CacheStore implements Cache {
-	
+
 	private static final int TIME_THRESHOLD_MS = 5;
 	private static final int MAX_CAPACITY = 1000;
 
-    private final int maxCapacity;
-    private final long lifeTime;
-    private final long idleTime;
-    private final boolean isEternal;
+	private final int maxCapacity;
+	private final long lifeTime;
+	private final long idleTime;
+	private final boolean isEternal;
 
-    private final Map<Object, Reference<Element>> elements = new LinkedHashMap<>();
-    private final Timer timer = new Timer();
+	private final Map<Object, Reference<Element>> elements = new LinkedHashMap<>();
+	private final Timer timer = new Timer();
 
-    private int hitCount = 0;
-    private int missCount = 0;
+	private int hitCount = 0;
+	private int missCount = 0;
 
-    public CacheStore(int maxCapacity, long lifeTime, long idleTime, boolean isEternal) {
-        this.maxCapacity = Math.min(maxCapacity, MAX_CAPACITY);
-        this.lifeTime = Math.max(lifeTime, 0);
-        this.idleTime = Math.max(idleTime, 0);
-        this.isEternal = (lifeTime == 0 && idleTime == 0) || isEternal;
-    }
-    
+	public CacheStore(int maxCapacity, long lifeTime, long idleTime, boolean isEternal) {
+		this.maxCapacity = Math.min(maxCapacity, MAX_CAPACITY);
+		this.lifeTime = Math.max(lifeTime, 0);
+		this.idleTime = Math.max(idleTime, 0);
+		this.isEternal = (lifeTime == 0 && idleTime == 0) || isEternal;
+	}
+
 	@Override
 	public void put(Element element) {
 		Object key = element.getKey();
-		
+
 		synchronized (elements) {
 			if (elements.size() == maxCapacity) {
 				Object firstKey = elements.keySet().iterator().next();
 				elements.remove(firstKey);
-		    }
+			}
 			elements.put(key, new SoftReference<>(element));
 		}
-		
-		if (!isEternal) {	
+
+		if (!isEternal) {
 			scheduleEviction(key);
-		}	
+		}
 	}
 
 	@Override
 	public Element get(Object key) {
 		Element element = null;
-		
-		synchronized(elements) {
+
+		synchronized (elements) {
 			Reference<Element> ref = elements.get(key);
 			if (ref != null) {
 				element = ref.get();
@@ -63,15 +63,15 @@ public class CacheStore implements Cache {
 					elements.remove(key);
 				}
 			}
-		}	
+		}
 		if (element != null) {
 			hitCount++;
-		} else {	
+		} else {
 			missCount++;
-		}	
+		}
 		return element;
 	}
-	
+
 	@Override
 	public boolean remove(Object key) {
 		synchronized (elements) {
@@ -96,14 +96,14 @@ public class CacheStore implements Cache {
 	public int getMissCount() {
 		return missCount;
 	}
-	
+
 	@Override
 	public int getSize() {
 		synchronized (elements) {
 			return elements.size();
 		}
 	}
-	
+
 	@Override
 	public Properties getProperties() {
 		Properties props = new Properties();
@@ -113,7 +113,7 @@ public class CacheStore implements Cache {
 		props.put("isEternal", isEternal);
 		return props;
 	}
-	
+
 	private void scheduleEviction(Object key) {
 		if (lifeTime != 0) {
 			TimerTask lifeTimerTask = getTimerTask(key, lifeElement -> lifeElement.getCreationTime() + lifeTime);
@@ -124,7 +124,7 @@ public class CacheStore implements Cache {
 			timer.schedule(idleTimerTask, idleTime, idleTime);
 		}
 	}
-	
+
 	private long getCurrentTime() {
 		return System.currentTimeMillis();
 	}
@@ -137,15 +137,16 @@ public class CacheStore implements Cache {
 					Reference<Element> ref = elements.get(key);
 					if (ref != null) {
 						Element element = ref.get();
-						if (element == null || timeFunction.applyAsLong(element) < getCurrentTime() + TIME_THRESHOLD_MS) {
+						if (element == null
+								|| timeFunction.applyAsLong(element) < getCurrentTime() + TIME_THRESHOLD_MS) {
 							elements.remove(key);
 							this.cancel();
-						}	
+						}
 					} else {
 						this.cancel();
 					}
 				}
-			}		
+			}
 		};
-	}	
+	}
 }

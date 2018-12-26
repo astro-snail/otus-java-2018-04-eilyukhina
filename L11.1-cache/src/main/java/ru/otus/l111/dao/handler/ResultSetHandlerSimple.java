@@ -15,10 +15,10 @@ public class ResultSetHandlerSimple<T> implements ResultSetHandler<T> {
 	}
 
 	public List<T> handle(final ResultSet rs) throws SQLException {
-		List<T> result = new ArrayList<>();		
+		List<T> result = new ArrayList<>();
 		while (rs.next()) {
-			 T instance = newInstance(type);
-			 result.add(populateObject(rs, instance));
+			T instance = newInstance(type);
+			result.add(populateObject(rs, instance));
 		}
 		return result;
 	}
@@ -44,4 +44,3 @@ public class ResultSetHandlerSimple<T> implements ResultSetHandler<T> {
 	}
 
 }
-

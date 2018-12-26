@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import java.sql.SQLException;
 
 public class ObjectHelper {
-	
+
 	public static <T> Field getFieldByName(T object, String name) throws SQLException {
 		Field field = null;
 		try {
@@ -15,7 +15,7 @@ public class ObjectHelper {
 			}
 		} catch (Exception e) {
 			throw new SQLException(e);
-		}	
+		}
 		return field;
 	}
 

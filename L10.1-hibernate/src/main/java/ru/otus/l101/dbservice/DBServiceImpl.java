@@ -10,13 +10,13 @@ import ru.otus.l101.dao.*;
 import ru.otus.l101.dataset.*;
 
 public class DBServiceImpl implements DBService {
-	
+
 	private Connection connection;
-	
+
 	public DBServiceImpl() throws SQLException {
 		this.connection = ConnectionHelper.getConnection();
 	}
-	
+
 	@Override
 	public void save(UserDataSet user) throws SQLException {
 		try {
@@ -26,10 +26,10 @@ public class DBServiceImpl implements DBService {
 			userDao.save(user);
 			// Save address
 			AddressDataSet address = user.getAddress();
-			if (address != null ) {
+			if (address != null) {
 				AddressDAO addressDao = new AddressDAOImpl(connection);
 				addressDao.save(address);
-			}	
+			}
 			// Save phones
 			PhoneDAO phoneDao = new PhoneDAOImpl(connection);
 			for (PhoneDataSet phone : user.getPhones()) {
@@ -42,7 +42,7 @@ public class DBServiceImpl implements DBService {
 			connection.setAutoCommit(true);
 		}
 	}
-	
+
 	@Override
 	public void delete(UserDataSet user) throws SQLException {
 		try {
@@ -55,7 +55,7 @@ public class DBServiceImpl implements DBService {
 			}
 			// Delete phones
 			PhoneDAO phoneDao = new PhoneDAOImpl(connection);
-			for(PhoneDataSet phone : user.getPhones()) {
+			for (PhoneDataSet phone : user.getPhones()) {
 				phoneDao.delete(phone);
 			}
 			// Delete user
@@ -86,9 +86,9 @@ public class DBServiceImpl implements DBService {
 		}
 		return user;
 	}
-	
+
 	@Override
-	public UserDataSet loadByName(String name) throws SQLException {		
+	public UserDataSet loadByName(String name) throws SQLException {
 		UserDataSet user = null;
 		try {
 			connection.setAutoCommit(false);
@@ -115,7 +115,7 @@ public class DBServiceImpl implements DBService {
 			for (UserDataSet user : users) {
 				loadAddress(user);
 				loadPhones(user);
-			}	
+			}
 			connection.commit();
 		} catch (SQLException e) {
 			connection.rollback();
@@ -124,22 +124,22 @@ public class DBServiceImpl implements DBService {
 		}
 		return users;
 	}
-	
+
 	@Override
 	public void shutdown() throws SQLException {
 		connection.close();
 	}
-	
+
 	private void loadAddress(UserDataSet user) throws SQLException {
 		AddressDAO addressDao = new AddressDAOImpl(connection);
 		AddressDataSet address = addressDao.loadByUserId(user.getId());
 		user.setAddress(address);
 	}
-	
+
 	private void loadPhones(UserDataSet user) throws SQLException {
 		PhoneDAO phoneDao = new PhoneDAOImpl(connection);
 		List<PhoneDataSet> phones = phoneDao.loadByUserId(user.getId());
 		user.setPhones(phones);
 	}
-		
+
 }

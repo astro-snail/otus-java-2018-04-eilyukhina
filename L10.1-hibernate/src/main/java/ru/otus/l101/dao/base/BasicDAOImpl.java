@@ -10,20 +10,20 @@ import ru.otus.l101.dao.handler.ResultSetHandlerSimple;
 import ru.otus.l101.dataset.DataSet;
 
 public abstract class BasicDAOImpl<T extends DataSet> implements BasicDAO<T> {
-	
+
 	private final Connection connection;
 	private final Class<T> type;
-	
+
 	public BasicDAOImpl(Connection connection, Class<T> type) {
 		this.connection = connection;
 		this.type = type;
 	}
-	
+
 	protected T selectSingle(String sql, Object... params) throws SQLException {
 		List<T> result = select(sql, params);
 		return result.size() > 0 ? result.get(0) : null;
 	}
-	
+
 	protected List<T> select(String sql, Object... params) throws SQLException {
 		QueryExecutor executor = new QueryExecutor(connection);
 		ResultSetHandler<T> handler = new ResultSetHandlerSimple<>(type);
@@ -37,7 +37,7 @@ public abstract class BasicDAOImpl<T extends DataSet> implements BasicDAO<T> {
 		QueryExecutor executor = new QueryExecutor(connection);
 		return executor.executeUpdate(sql, dataSet, names);
 	}
-	
+
 	protected boolean exists(T dataSet) throws SQLException {
 		if (dataSet == null) {
 			throw new SQLException(type.getName() + " not found: " + dataSet);
@@ -50,10 +50,10 @@ public abstract class BasicDAOImpl<T extends DataSet> implements BasicDAO<T> {
 
 	@Override
 	public abstract T load(Long id) throws SQLException;
-	
+
 	@Override
 	public abstract List<T> loadAll() throws SQLException;
-	
+
 	@Override
 	public abstract void delete(T dataSet) throws SQLException;
 }

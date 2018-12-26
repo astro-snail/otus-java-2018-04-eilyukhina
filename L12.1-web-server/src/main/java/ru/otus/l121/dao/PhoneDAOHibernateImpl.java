@@ -13,13 +13,13 @@ import org.hibernate.query.Query;
 import ru.otus.l121.dataset.PhoneDataSet;
 
 public class PhoneDAOHibernateImpl implements PhoneDAO {
-	
+
 	private final Session session;
-	
+
 	public PhoneDAOHibernateImpl(final Session session) {
 		this.session = session;
 	}
-	
+
 	@Override
 	public void save(PhoneDataSet dataSet) throws SQLException {
 		session.saveOrUpdate(dataSet);
@@ -33,29 +33,29 @@ public class PhoneDAOHibernateImpl implements PhoneDAO {
 	@Override
 	public PhoneDataSet loadByNumber(String number) throws SQLException {
 		CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<PhoneDataSet> criteria = builder.createQuery(PhoneDataSet.class);
-        Root<PhoneDataSet> from = criteria.from(PhoneDataSet.class);
-        criteria.where(builder.equal(from.get("number"), number));
-        Query<PhoneDataSet> query = session.createQuery(criteria);
-        return query.uniqueResult();
+		CriteriaQuery<PhoneDataSet> criteria = builder.createQuery(PhoneDataSet.class);
+		Root<PhoneDataSet> from = criteria.from(PhoneDataSet.class);
+		criteria.where(builder.equal(from.get("number"), number));
+		Query<PhoneDataSet> query = session.createQuery(criteria);
+		return query.uniqueResult();
 	}
 
 	@Override
 	public List<PhoneDataSet> loadByUserId(Long userId) throws SQLException {
 		CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<PhoneDataSet> criteria = builder.createQuery(PhoneDataSet.class);
-        Root<PhoneDataSet> from = criteria.from(PhoneDataSet.class);
-        criteria.where(builder.equal(from.get("user"), userId));
-        Query<PhoneDataSet> query = session.createQuery(criteria);
-        return query.list();
+		CriteriaQuery<PhoneDataSet> criteria = builder.createQuery(PhoneDataSet.class);
+		Root<PhoneDataSet> from = criteria.from(PhoneDataSet.class);
+		criteria.where(builder.equal(from.get("user"), userId));
+		Query<PhoneDataSet> query = session.createQuery(criteria);
+		return query.list();
 	}
 
 	@Override
 	public List<PhoneDataSet> loadAll() throws SQLException {
 		CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<PhoneDataSet> criteria = builder.createQuery(PhoneDataSet.class);
-        criteria.from(PhoneDataSet.class);
-        return session.createQuery(criteria).list();
+		CriteriaQuery<PhoneDataSet> criteria = builder.createQuery(PhoneDataSet.class);
+		criteria.from(PhoneDataSet.class);
+		return session.createQuery(criteria).list();
 	}
 
 	@Override

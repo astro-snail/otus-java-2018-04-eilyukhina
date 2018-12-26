@@ -13,8 +13,8 @@ public class ConnectionHelper {
 		if (connection == null) {
 			String url = "jdbc:postgresql://localhost:5432/orm";
 			Properties props = new Properties();
-			props.setProperty("user","postgres");
-			props.setProperty("password","admin");
+			props.setProperty("user", "postgres");
+			props.setProperty("password", "admin");
 			connection = DriverManager.getConnection(url, props);
 		}
 		return connection;

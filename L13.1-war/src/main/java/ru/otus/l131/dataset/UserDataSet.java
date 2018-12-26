@@ -14,7 +14,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "users")
 public class UserDataSet extends DataSet {
-	
+
 	private String name;
 	private int age;
 	private AddressDataSet address;
@@ -29,11 +29,11 @@ public class UserDataSet extends DataSet {
 		this.setName(name);
 		this.setAge(age);
 	}
-	
+
 	public UserDataSet(String name, int age) {
 		this(null, name, age);
 	}
-	
+
 	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
 	public AddressDataSet getAddress() {
 		return address;
@@ -55,7 +55,7 @@ public class UserDataSet extends DataSet {
 			phone.setUser(this);
 		}
 	}
-	
+
 	public void addPhone(PhoneDataSet phone) {
 		phones.add(phone);
 		phone.setUser(this);
@@ -65,12 +65,12 @@ public class UserDataSet extends DataSet {
 		phones.remove(phone);
 		phone.setUser(null);
 	}
-	
+
 	@Column(name = "name")
 	public String getName() {
 		return name;
 	}
-	
+
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -86,11 +86,8 @@ public class UserDataSet extends DataSet {
 
 	@Override
 	public String toString() {
-		return "User ID = " + getId() + 
-				", name = " + getName() + 
-				", age = " + getAge() + 
-				", address = " + getAddress() +
-				", phones = " + getPhones();
+		return "User ID = " + getId() + ", name = " + getName() + ", age = " + getAge() + ", address = " + getAddress()
+				+ ", phones = " + getPhones();
 	}
 
 	@Override
@@ -98,13 +95,12 @@ public class UserDataSet extends DataSet {
 		if (!(obj instanceof UserDataSet)) {
 			return false;
 		}
-		UserDataSet other = (UserDataSet)obj;
+		UserDataSet other = (UserDataSet) obj;
 		return getId() != null && getId().equals(other.getId());
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return getId().intValue();
 	}
 }
-

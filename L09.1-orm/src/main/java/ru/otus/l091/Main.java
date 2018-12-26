@@ -19,20 +19,19 @@ public class Main {
 
 			UserDataSet newUser = executor.load(user.getId(), UserDataSet.class);
 			System.out.println("User loaded: " + newUser);
-		
+
 			System.out.println("Objects are equal: " + user.equals(newUser));
 
 			user.setAge(40);
 			user.setName("John Doe");
 			executor.save(user);
 			System.out.println("User updated: " + user);
-		
+
 			newUser = executor.load(user.getId(), UserDataSet.class);
 			System.out.println("User loaded: " + newUser);
-		
+
 			System.out.println("Objects are equal: " + user.equals(newUser));
-		}	
+		}
 	}
 
 }
-

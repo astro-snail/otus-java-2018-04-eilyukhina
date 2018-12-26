@@ -1,27 +1,32 @@
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns="http://www.springframework.org/schema/beans"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
 	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-	<bean id="cacheConfiguration" class="ru.otus.l151.cache.CacheConfiguration"></bean>
-	
-	<bean id="cache" class="ru.otus.l151.cache.CacheFactory" factory-method="getCache">
+	<bean id="cacheConfiguration"
+		class="ru.otus.l151.cache.CacheConfiguration"></bean>
+
+	<bean id="cache" class="ru.otus.l151.cache.CacheFactory"
+		factory-method="getCache">
 		<constructor-arg ref="cacheConfiguration"></constructor-arg>
 	</bean>
 
-	<bean id="messageSystem" class="ru.otus.l151.messagesystem.MessageSystem"></bean>
-	
-	<bean id="messageSystemContext" class="ru.otus.l151.app.MessageSystemContext">
+	<bean id="messageSystem"
+		class="ru.otus.l151.messagesystem.MessageSystem"></bean>
+
+	<bean id="messageSystemContext"
+		class="ru.otus.l151.app.MessageSystemContext">
 		<constructor-arg ref="messageSystem"></constructor-arg>
 	</bean>
-	
-    <bean id="dbService" class="ru.otus.l151.dbservice.DBServiceHibernateImpl">
-       <constructor-arg ref="messageSystemContext"></constructor-arg>
-       <constructor-arg ref="cache"></constructor-arg>
-    </bean>   
-    
-    <bean id="uiService" class="ru.otus.l151.uiservice.UIServiceImpl">
-       <constructor-arg ref="messageSystemContext"></constructor-arg>
-    </bean>    
+
+	<bean id="dbService"
+		class="ru.otus.l151.dbservice.DBServiceHibernateImpl">
+		<constructor-arg ref="messageSystemContext"></constructor-arg>
+		<constructor-arg ref="cache"></constructor-arg>
+	</bean>
+
+	<bean id="uiService" class="ru.otus.l151.uiservice.UIServiceImpl">
+		<constructor-arg ref="messageSystemContext"></constructor-arg>
+	</bean>
 
 </beans>

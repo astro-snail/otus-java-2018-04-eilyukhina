@@ -6,13 +6,13 @@ import java.util.List;
 import ru.otus.l121.dataset.DataSet;
 
 public interface BasicDAO<T extends DataSet> {
-	
+
 	void save(T dataSet) throws SQLException;
 
 	T load(Long id) throws SQLException;
-	
+
 	List<T> loadAll() throws SQLException;
-	
+
 	void delete(T dataSet) throws SQLException;
 
 }

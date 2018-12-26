@@ -1,16 +1,16 @@
 package ru.otus.l121.cache;
 
 public class Element<K, V> {
-	
+
 	private final K key;
 	private final V value;
 	private final long creationTime;
 	private long lastAccessTime;
-	
+
 	public Element(K key, V value) {
 		this.key = key;
 		this.value = value;
-		this.creationTime = getCurrentTime();		
+		this.creationTime = getCurrentTime();
 	}
 
 	public long getLastAccessTime() {
@@ -32,12 +32,12 @@ public class Element<K, V> {
 	public long getCreationTime() {
 		return creationTime;
 	}
-	
+
 	@Override
 	public String toString() {
-		return key + ": " + value + ", created: " + creationTime + ", last accessed: " + lastAccessTime; 
+		return key + ": " + value + ", created: " + creationTime + ", last accessed: " + lastAccessTime;
 	}
-	
+
 	private long getCurrentTime() {
 		return System.currentTimeMillis();
 	}

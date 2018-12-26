@@ -1,4 +1,5 @@
 package ru.otus.l091.test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.sql.Connection;
@@ -15,7 +16,7 @@ import ru.otus.l091.dataset.UserDataSet;
 import ru.otus.l091.executor.QueryExecutor;
 
 class QueryExecutorTest {
-	
+
 	private static Connection connection;
 	private QueryExecutor executor;
 
@@ -41,47 +42,46 @@ class QueryExecutorTest {
 
 	@Test
 	void testIdReturned() throws SQLException {
-		UserDataSet user = new UserDataSet("Anna", 25); 
+		UserDataSet user = new UserDataSet("Anna", 25);
 		executor.save(user);
-		
+
 		assertNotEquals(0, user.getId());
 	}
-	
+
 	@Test
 	void testDifferentIdRetirned() throws SQLException {
-		UserDataSet user1 = new UserDataSet("Anna", 25); 
+		UserDataSet user1 = new UserDataSet("Anna", 25);
 		executor.save(user1);
-		
-		UserDataSet user2 = new UserDataSet("Anna", 25); 
+
+		UserDataSet user2 = new UserDataSet("Anna", 25);
 		executor.save(user2);
-		
+
 		assertNotEquals(user1.getId(), user2.getId());
 	}
 
-
 	@Test
 	void testObjectUpdated() throws SQLException {
-		UserDataSet user = new UserDataSet("Anna", 25); 
+		UserDataSet user = new UserDataSet("Anna", 25);
 		executor.save(user);
-		
+
 		user.setAge(20);
 		user.setName("Anna-Maria");
 		executor.save(user);
-		
+
 		UserDataSet newUser = executor.load(user.getId(), UserDataSet.class);
 		assertEquals(user, newUser);
 	}
-	
+
 	@Test
 	void testObjectLoaded() throws SQLException {
-		UserDataSet user1 = new UserDataSet("Anna", 25); 
+		UserDataSet user1 = new UserDataSet("Anna", 25);
 		executor.save(user1);
-		
-		UserDataSet user2 = new UserDataSet("Anna", 25); 
+
+		UserDataSet user2 = new UserDataSet("Anna", 25);
 		executor.save(user2);
-		
+
 		UserDataSet newUser = executor.load(user1.getId(), UserDataSet.class);
-		
+
 		assertEquals(user1, newUser);
 		assertNotEquals(user2, newUser);
 	}

@@ -11,13 +11,13 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import ru.otus.l131.dbservice.DBService;
 
 public class ContextListener implements ServletContextListener {
-	
+
 	@Autowired
 	private DBService dbService;
 
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
-	    SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, event.getServletContext());
+		SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, event.getServletContext());
 	}
 
 	@Override
@@ -25,7 +25,7 @@ public class ContextListener implements ServletContextListener {
 		try {
 			dbService.shutdown();
 		} catch (SQLException e) {
-			
+
 		}
 	}
 

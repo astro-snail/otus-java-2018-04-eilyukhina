@@ -39,7 +39,7 @@ public class UserDataSet extends DataSet {
 		if (!(obj instanceof UserDataSet)) {
 			return false;
 		}
-		UserDataSet other = (UserDataSet)obj;
+		UserDataSet other = (UserDataSet) obj;
 		return getId() == other.getId() && name.equals(other.name) && age == other.age;
 	}
 }

@@ -8,7 +8,7 @@ import ru.otus.l111.dao.base.BasicDAOImpl;
 import ru.otus.l111.dataset.PhoneDataSet;
 
 public class PhoneDAOImpl extends BasicDAOImpl<PhoneDataSet> implements PhoneDAO {
-	
+
 	private static final String SELECT_PHONE_BY_ID = "SELECT * FROM phones WHERE id = ?";
 	private static final String SELECT_PHONE_BY_USER_ID = "SELECT * FROM phones WHERE user_id = ?";
 	private static final String SELECT_PHONE_BY_NUMBER = "SELECT * FROM phones WHERE number = ?";
@@ -16,7 +16,7 @@ public class PhoneDAOImpl extends BasicDAOImpl<PhoneDataSet> implements PhoneDAO
 	private static final String UPDATE_PHONE = "UPDATE phones SET number = ?, user_id = ? WHERE id = ?";
 	private static final String INSERT_PHONE = "INSERT INTO phones (number, user_id) VALUES (?, ?)";
 	private static final String DELETE_PHONE = "DELETE FROM phones WHERE id = ?";
-	
+
 	public PhoneDAOImpl(final Connection connection) {
 		super(connection, PhoneDataSet.class);
 	}
@@ -39,7 +39,7 @@ public class PhoneDAOImpl extends BasicDAOImpl<PhoneDataSet> implements PhoneDAO
 	public PhoneDataSet loadByNumber(String number) throws SQLException {
 		return selectSingle(SELECT_PHONE_BY_NUMBER, number);
 	}
-	
+
 	@Override
 	public List<PhoneDataSet> loadByUserId(Long userId) throws SQLException {
 		return select(SELECT_PHONE_BY_USER_ID, userId);

@@ -1,7 +1,7 @@
 package ru.otus.l051.validations;
 
 public class AssertionFailedError extends AssertionError {
-	
+
 	/**
 	 * 
 	 */
@@ -10,7 +10,7 @@ public class AssertionFailedError extends AssertionError {
 	public AssertionFailedError() {
 		super();
 	}
-	
+
 	public AssertionFailedError(String message) {
 		super(message);
 	}

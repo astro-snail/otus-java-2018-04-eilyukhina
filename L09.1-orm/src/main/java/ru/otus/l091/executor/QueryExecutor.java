@@ -20,20 +20,20 @@ public class QueryExecutor {
 
 	private final Connection connection;
 
-    public QueryExecutor(Connection connection) {
-        this.connection = connection;
-    }
+	public QueryExecutor(Connection connection) {
+		this.connection = connection;
+	}
 
-    private <T extends DataSet> T query(String sql, ResultSetHandler<T> handler, Object... params) throws SQLException {
+	private <T extends DataSet> T query(String sql, ResultSetHandler<T> handler, Object... params) throws SQLException {
 		try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 			prepare(stmt, params);
 			ResultSet rs = stmt.executeQuery();
 			return handler.handle(rs);
 		}
-    }
+	}
 
-    private <T extends DataSet> int update(String sql, T user, String... names) throws SQLException {
-    	try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+	private <T extends DataSet> int update(String sql, T user, String... names) throws SQLException {
+		try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 			prepare(stmt, getParams(user, names));
 			int updates = stmt.executeUpdate();
 			if (updates == 0) {
@@ -41,10 +41,10 @@ public class QueryExecutor {
 			}
 			return updates;
 		}
-    }
+	}
 
-    private <T extends DataSet> int insert(String sql, T user, String... names) throws SQLException {
-    	try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+	private <T extends DataSet> int insert(String sql, T user, String... names) throws SQLException {
+		try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 			prepare(stmt, getParams(user, names));
 			int inserts = stmt.executeUpdate();
 			if (inserts == 0) {
@@ -59,32 +59,32 @@ public class QueryExecutor {
 			}
 			return inserts;
 		}
-    }
+	}
 
-    private void prepare(PreparedStatement stmt, Object... params) throws SQLException {
-    	ParameterMetaData metadata = stmt.getParameterMetaData();
-    	int count = metadata.getParameterCount();
-    	if (count != params.length) {
-    		throw new SQLException("Wrong number of parameters");
-    	}
-    	for (int i = 0; i < count; i++) {
-    		stmt.setObject(i + 1, params[i]);
-    	}
-    }
-    
-    private Object[] getParams(Object obj, String[] names) throws SQLException {
-    	Object[] params = new Object[names.length];
-    	try {
-    		for (int i = 0; i < names.length; i++) {
-    			Field field = ObjectHelper.getFieldByName(obj, names[i]);
-    			field.setAccessible(true);
-    			params[i] = field.get(obj);
-    		}
-    	} catch (Exception e) {
-    		throw new SQLException(e);
-    	}
-    	return params;
-    }
+	private void prepare(PreparedStatement stmt, Object... params) throws SQLException {
+		ParameterMetaData metadata = stmt.getParameterMetaData();
+		int count = metadata.getParameterCount();
+		if (count != params.length) {
+			throw new SQLException("Wrong number of parameters");
+		}
+		for (int i = 0; i < count; i++) {
+			stmt.setObject(i + 1, params[i]);
+		}
+	}
+
+	private Object[] getParams(Object obj, String[] names) throws SQLException {
+		Object[] params = new Object[names.length];
+		try {
+			for (int i = 0; i < names.length; i++) {
+				Field field = ObjectHelper.getFieldByName(obj, names[i]);
+				field.setAccessible(true);
+				params[i] = field.get(obj);
+			}
+		} catch (Exception e) {
+			throw new SQLException(e);
+		}
+		return params;
+	}
 
 	public <T extends DataSet> void save(T user) throws SQLException {
 		if (!exists(user)) {
@@ -104,4 +104,3 @@ public class QueryExecutor {
 	}
 
 }
-

@@ -17,8 +17,8 @@ public class Handler<T> implements ResultSetHandler<T> {
 
 	public T handle(final ResultSet rs) throws SQLException {
 		if (rs.next()) {
-			 T instance = newInstance(type);
-			 return populateObject(rs, instance);
+			T instance = newInstance(type);
+			return populateObject(rs, instance);
 		}
 		return null;
 	}
