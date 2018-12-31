@@ -3,8 +3,6 @@ package ru.otus.l161.server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
@@ -16,7 +14,6 @@ import ru.otus.l161.channel.SocketMessageWorker;
 import ru.otus.l161.message.Address;
 import ru.otus.l161.message.Message;
 import ru.otus.l161.message.app.MsgShutdown;
-import ru.otus.l161.runner.ProcessRunnerImpl;
 
 public class SocketMessageServer implements SocketMessageServerMBean {
 
@@ -28,11 +25,20 @@ public class SocketMessageServer implements SocketMessageServerMBean {
 	private final ExecutorService server;
 	private final ConcurrentMap<Address, MessageWorker> workers;
 
+	private final Runnable onServerStartup;
+	private final Runnable onServerShutdown;
+
 	private volatile boolean running = false;
 
 	public SocketMessageServer() {
-		server = Executors.newFixedThreadPool(2);
-		workers = new ConcurrentHashMap<>();
+		this(null, null);
+	}
+
+	public SocketMessageServer(Runnable onServerStartup, Runnable onServerShutdown) {
+		this.server = Executors.newFixedThreadPool(2);
+		this.workers = new ConcurrentHashMap<>();
+		this.onServerStartup = onServerStartup;
+		this.onServerShutdown = onServerShutdown;
 	}
 
 	public void start() {
@@ -44,7 +50,9 @@ public class SocketMessageServer implements SocketMessageServerMBean {
 			server.execute(this::routeMessages);
 			server.execute(this::acceptClients);
 
-			startClients();
+			if (onServerStartup != null) {
+				onServerStartup.run();
+			}
 
 		} catch (IOException e) {
 			logger.severe(e.getMessage());
@@ -118,55 +126,17 @@ public class SocketMessageServer implements SocketMessageServerMBean {
 	}
 
 	private void shutdown() {
-		broadcastMessage(new Message(null, null, new MsgShutdown()));
-		shutdownClients();
+		broadcastMessage(new Message(null, null, new MsgShutdown()));		
 		server.shutdown();
+		
+		if (onServerShutdown != null) {
+			onServerShutdown.run();
+		}
+		
 		try {
 			serverSocket.close();
 		} catch (IOException e) {
 			logger.severe(e.getMessage());
-		}
-	}
-
-	private void startClients() {
-		List<String[]> clientStartCommand = new ArrayList<>();
-		clientStartCommand
-				.add(new String[] { "java", "-jar", "../../L16.1-db-server/L16.1-db-service/target/db-service.jar" });
-		clientStartCommand.add(new String[] { System.getenv("CATALINA_HOME") + "/bin/startup.bat" });
-
-		for (String[] command : clientStartCommand) {
-			new Thread(new Runnable() {
-
-				@Override
-				public void run() {
-					try {
-						new ProcessRunnerImpl().start(command);
-						logger.info("Client started");
-					} catch (IOException e) {
-						logger.severe(e.getMessage());
-					}
-				}
-			}).start();
-		}
-	}
-
-	private void shutdownClients() {
-		List<String[]> clientStopCommand = new ArrayList<>();
-		clientStopCommand.add(new String[] { System.getenv("CATALINA_HOME") + "/bin/shutdown.bat" });
-
-		for (String[] command : clientStopCommand) {
-			new Thread(new Runnable() {
-
-				@Override
-				public void run() {
-					try {
-						new ProcessRunnerImpl().start(command);
-						logger.info("Client stopped");
-					} catch (IOException e) {
-						logger.severe(e.getMessage());
-					}
-				}
-			}).start();
 		}
 	}
 }

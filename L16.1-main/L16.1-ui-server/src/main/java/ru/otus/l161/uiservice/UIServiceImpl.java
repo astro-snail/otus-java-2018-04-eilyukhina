@@ -70,11 +70,11 @@ public class UIServiceImpl implements UIService {
 
 			Message message = new Message(from, to, request);
 			worker.put(message);
+			logger.info("Message sent: " + message);
 
 			if (!(responseType == null || listener == null)) {
 				addListener(responseType.getName(), listener);
 			}
-			logger.info("Message sent: " + message);
 		} catch (IOException | InterruptedException e) {
 			logger.severe(e.getMessage());
 		}
@@ -120,8 +120,8 @@ public class UIServiceImpl implements UIService {
 	@Override
 	public void shutdown() {
 		messageHandler.interrupt();
-		listeners.clear();
 		worker.close();
+		listeners.clear();
 	}
 
 	private void addListener(String event, MessageEventListener listener) {

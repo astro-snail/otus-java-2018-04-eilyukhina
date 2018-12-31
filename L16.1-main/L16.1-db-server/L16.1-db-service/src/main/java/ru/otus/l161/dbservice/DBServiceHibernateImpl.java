@@ -28,6 +28,11 @@ public class DBServiceHibernateImpl implements DBService {
 	}
 
 	@Override
+	public void init() {
+
+	}
+
+	@Override
 	public UserDataSet save(UserDataSet user) throws SQLException {
 		try (Session session = sessionFactory.openSession()) {
 			Transaction transaction = session.beginTransaction();
@@ -205,5 +210,4 @@ public class DBServiceHibernateImpl implements DBService {
 
 		return cacheParameters;
 	}
-
 }

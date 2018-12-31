@@ -8,6 +8,8 @@ import ru.otus.l161.dataset.*;
 
 public interface DBService {
 
+	void init();
+
 	UserDataSet save(UserDataSet user) throws SQLException;
 
 	UserDataSet load(Long id) throws SQLException;
@@ -30,5 +32,5 @@ public interface DBService {
 
 	Map<String, String> getCacheParameters();
 
-	void shutdown() throws SQLException;
+	void shutdown();
 }
