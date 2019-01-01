@@ -34,7 +34,7 @@
 
 		<dependency>
 			<groupId>ru.otus</groupId>
-			<artifactId>L16.1-db-messages</artifactId>
+			<artifactId>L16.1-db-client</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 

@@ -1,6 +1,6 @@
-package ru.otus.l161.messages;
+package ru.otus.l161.dbmessages;
 
-public class MsgDeleteUserResponse {
+public class MsgDeleteUserResponse extends Response {
 
 	private final String message;
 
@@ -10,5 +10,10 @@ public class MsgDeleteUserResponse {
 
 	public String getMessage() {
 		return message;
+	}
+
+	@Override
+	public Object getValue() {
+		return getMessage();
 	}
 }

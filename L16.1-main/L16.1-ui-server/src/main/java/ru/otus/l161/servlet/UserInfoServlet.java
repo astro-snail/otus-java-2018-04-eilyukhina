@@ -14,8 +14,8 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import ru.otus.l161.message.MessageEvent;
 import ru.otus.l161.message.MessageEventListener;
-import ru.otus.l161.messages.*;
 import ru.otus.l161.dataset.*;
+import ru.otus.l161.dbmessages.*;
 import ru.otus.l161.uiservice.Operation;
 import ru.otus.l161.uiservice.UIService;
 
@@ -58,7 +58,7 @@ public class UserInfoServlet extends HttpServlet {
 					}
 				};
 
-				uiService.handleRequest(new MsgUserRequestById(id), MsgUserResponse.class, listener);
+				uiService.doRequest(new MsgUserRequestById(id), listener);
 			}
 		}
 	}
@@ -84,13 +84,13 @@ public class UserInfoServlet extends HttpServlet {
 
 			switch (operation) {
 			case SELECT:
-				uiService.handleRequest(new MsgUserRequestById(user.getId()), MsgUserResponse.class, listener);
+				uiService.doRequest(new MsgUserRequestById(user.getId()), listener);
 				break;
 			case SAVE:
-				uiService.handleRequest(new MsgSaveUserRequest(user), MsgSaveUserResponse.class, listener);
+				uiService.doRequest(new MsgSaveUserRequest(user), listener);
 				break;
 			case DELETE:
-				uiService.handleRequest(new MsgDeleteUserRequest(user.getId()), MsgDeleteUserResponse.class, listener);
+				uiService.doRequest(new MsgDeleteUserRequest(user.getId()), listener);
 			}
 		}
 	}

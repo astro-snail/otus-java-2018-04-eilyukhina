@@ -9,8 +9,8 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>L16.1-db-messages</artifactId>
-	<name>L16.1-db-messages</name>
+	<artifactId>L16.1-db-client</artifactId>
+	<name>L16.1-db-client</name>
 
 	<dependencies>
 		<dependency>
@@ -21,7 +21,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>db-messages</finalName>
+		<finalName>db-client</finalName>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>

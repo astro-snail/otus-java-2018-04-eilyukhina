@@ -2,29 +2,17 @@ package ru.otus.l161.dbservice;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import ru.otus.l161.DBHelper;
 import ru.otus.l161.cache.CacheConfiguration;
 import ru.otus.l161.cache.CacheFactory;
 import ru.otus.l161.channel.SocketMessageWorker;
-import ru.otus.l161.dataset.UserDataSet;
+import ru.otus.l161.dbmessages.Request;
+import ru.otus.l161.dbmessages.Response;
 import ru.otus.l161.message.Address;
 import ru.otus.l161.message.Message;
 import ru.otus.l161.message.app.MsgShutdown;
-import ru.otus.l161.messages.MsgAllUsersRequest;
-import ru.otus.l161.messages.MsgAllUsersResponse;
-import ru.otus.l161.messages.MsgCacheParametersRequest;
-import ru.otus.l161.messages.MsgCacheParametersResponse;
-import ru.otus.l161.messages.MsgDeleteUserRequest;
-import ru.otus.l161.messages.MsgDeleteUserResponse;
-import ru.otus.l161.messages.MsgSaveUserRequest;
-import ru.otus.l161.messages.MsgSaveUserResponse;
-import ru.otus.l161.messages.MsgUserRequestById;
-import ru.otus.l161.messages.MsgUserRequestByName;
-import ru.otus.l161.messages.MsgUserResponse;
 
 public class RequestHandler {
 
@@ -90,50 +78,24 @@ public class RequestHandler {
 		dbService.shutdown();
 	}
 
-	private Message handleRequest(Message message) throws SQLException {
+	private Message handleRequest(Message requestMessage) throws SQLException {
 
-		Message response = null;
+		Message responseMessage = null;
 
-		Object payload = message.getPayload();
+		if (requestMessage.getMessageType() == MsgShutdown.class) {
 
-		if (message.getMessageType() == MsgShutdown.class) {
 			shutdown();
+
+		} else {
+
+			Object payload = requestMessage.getPayload();
+
+			if (payload instanceof Request) {
+				Response response = ((Request) payload).execute(dbService);
+				responseMessage = new Message(requestMessage.getTo(), requestMessage.getFrom(), response);
+			}
 		}
 
-		if (message.getMessageType() == MsgAllUsersRequest.class) {
-			List<UserDataSet> users = dbService.loadAll();
-			response = new Message(message.getTo(), message.getFrom(), new MsgAllUsersResponse(users));
-		}
-
-		if (message.getMessageType() == MsgUserRequestById.class) {
-			MsgUserRequestById request = (MsgUserRequestById) payload;
-			UserDataSet user = dbService.load(request.getId());
-			response = new Message(message.getTo(), message.getFrom(), new MsgUserResponse(user));
-		}
-
-		if (message.getMessageType() == MsgUserRequestByName.class) {
-			MsgUserRequestByName request = (MsgUserRequestByName) payload;
-			UserDataSet user = dbService.loadByName(request.getName());
-			response = new Message(message.getTo(), message.getFrom(), new MsgUserResponse(user));
-		}
-
-		if (message.getMessageType() == MsgSaveUserRequest.class) {
-			MsgSaveUserRequest request = (MsgSaveUserRequest) payload;
-			UserDataSet user = dbService.save(request.getUser());
-			response = new Message(message.getTo(), message.getFrom(), new MsgSaveUserResponse(user));
-		}
-
-		if (message.getMessageType() == MsgDeleteUserRequest.class) {
-			MsgDeleteUserRequest request = (MsgDeleteUserRequest) payload;
-			String result = dbService.delete(request.getId());
-			response = new Message(message.getTo(), message.getFrom(), new MsgDeleteUserResponse(result));
-		}
-
-		if (message.getMessageType() == MsgCacheParametersRequest.class) {
-			Map<String, String> cacheParams = dbService.getCacheParameters();
-			response = new Message(message.getTo(), message.getFrom(), new MsgCacheParametersResponse(cacheParams));
-		}
-
-		return response;
+		return responseMessage;
 	}
 }

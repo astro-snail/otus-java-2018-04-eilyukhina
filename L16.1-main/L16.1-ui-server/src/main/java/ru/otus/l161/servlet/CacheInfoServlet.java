@@ -11,10 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
+import ru.otus.l161.dbmessages.MsgCacheParametersRequest;
 import ru.otus.l161.message.MessageEvent;
 import ru.otus.l161.message.MessageEventListener;
-import ru.otus.l161.messages.MsgCacheParametersRequest;
-import ru.otus.l161.messages.MsgCacheParametersResponse;
 import ru.otus.l161.uiservice.UIService;
 
 @SuppressWarnings("serial")
@@ -44,7 +43,7 @@ public class CacheInfoServlet extends HttpServlet {
 				}
 			};
 
-			uiService.handleRequest(new MsgCacheParametersRequest(), MsgCacheParametersResponse.class, listener);
+			uiService.doRequest(new MsgCacheParametersRequest(), listener);
 		}
 	}
 }

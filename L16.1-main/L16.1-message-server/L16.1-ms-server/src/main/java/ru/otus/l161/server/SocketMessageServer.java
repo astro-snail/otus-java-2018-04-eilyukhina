@@ -24,21 +24,20 @@ public class SocketMessageServer implements SocketMessageServerMBean {
 	private ServerSocket serverSocket;
 	private final ExecutorService server;
 	private final ConcurrentMap<Address, MessageWorker> workers;
-
-	private final Runnable onServerStartup;
-	private final Runnable onServerShutdown;
+	private final Runnable onStartup;
+	private final Runnable onShutdown;
 
 	private volatile boolean running = false;
 
 	public SocketMessageServer() {
 		this(null, null);
 	}
-
-	public SocketMessageServer(Runnable onServerStartup, Runnable onServerShutdown) {
+	
+	public SocketMessageServer(Runnable onStartup, Runnable onShutdown) {
 		this.server = Executors.newFixedThreadPool(2);
 		this.workers = new ConcurrentHashMap<>();
-		this.onServerStartup = onServerStartup;
-		this.onServerShutdown = onServerShutdown;
+		this.onStartup = onStartup;
+		this.onShutdown = onShutdown;
 	}
 
 	public void start() {
@@ -49,10 +48,10 @@ public class SocketMessageServer implements SocketMessageServerMBean {
 
 			server.execute(this::routeMessages);
 			server.execute(this::acceptClients);
-
-			if (onServerStartup != null) {
-				onServerStartup.run();
-			}
+			
+			if (onStartup != null) {
+				onStartup.run();
+			}	
 
 		} catch (IOException e) {
 			logger.severe(e.getMessage());
@@ -129,10 +128,10 @@ public class SocketMessageServer implements SocketMessageServerMBean {
 		broadcastMessage(new Message(null, null, new MsgShutdown()));		
 		server.shutdown();
 		
-		if (onServerShutdown != null) {
-			onServerShutdown.run();
+		if (onShutdown != null) {
+			onShutdown.run();
 		}
-		
+
 		try {
 			serverSocket.close();
 		} catch (IOException e) {

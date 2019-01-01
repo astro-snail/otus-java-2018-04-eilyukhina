@@ -1,21 +1,20 @@
 package ru.otus.l161.uiservice;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Logger;
 
 import ru.otus.l161.channel.SocketMessageWorker;
+import ru.otus.l161.dbmessages.Request;
+import ru.otus.l161.dbmessages.Response;
 import ru.otus.l161.message.Address;
 import ru.otus.l161.message.Message;
 import ru.otus.l161.message.MessageEvent;
 import ru.otus.l161.message.MessageEventListener;
 import ru.otus.l161.message.app.MsgShutdown;
-import ru.otus.l161.messages.MsgAllUsersResponse;
-import ru.otus.l161.messages.MsgCacheParametersResponse;
-import ru.otus.l161.messages.MsgDeleteUserResponse;
-import ru.otus.l161.messages.MsgSaveUserResponse;
-import ru.otus.l161.messages.MsgUserResponse;
 
 public class UIServiceImpl implements UIService {
 
@@ -27,7 +26,7 @@ public class UIServiceImpl implements UIService {
 
 	private SocketMessageWorker worker;
 	private Thread messageHandler;
-	private ConcurrentMap<String, MessageEventListener> listeners = new ConcurrentHashMap<>();
+	private ConcurrentMap<String, List<MessageEventListener>> listeners = new ConcurrentHashMap<>();
 
 	@Override
 	public void init() {
@@ -63,7 +62,7 @@ public class UIServiceImpl implements UIService {
 	}
 
 	@Override
-	public void handleRequest(Object request, Class<?> responseType, MessageEventListener listener) {
+	public void doRequest(Request request, MessageEventListener listener) {
 		try {
 			Address from = new Address(LOCAL_PORT);
 			Address to = new Address(DB_PORT);
@@ -72,9 +71,10 @@ public class UIServiceImpl implements UIService {
 			worker.put(message);
 			logger.info("Message sent: " + message);
 
-			if (!(responseType == null || listener == null)) {
-				addListener(responseType.getName(), listener);
+			if (!(listener == null || request.getResponseType() == null)) {
+				addListener(request.getResponseType().getName(), listener);
 			}
+
 		} catch (IOException | InterruptedException e) {
 			logger.severe(e.getMessage());
 		}
@@ -83,37 +83,22 @@ public class UIServiceImpl implements UIService {
 	@Override
 	public void handleResponse(Message message) {
 
-		Object payload = message.getPayload();
-
-		Object response = null;
-
 		if (message.getMessageType() == MsgShutdown.class) {
+
 			shutdown();
-		}
 
-		if (message.getMessageType() == MsgCacheParametersResponse.class) {
-			response = ((MsgCacheParametersResponse) payload).getCacheParametes();
-		}
+		} else {
 
-		if (message.getMessageType() == MsgAllUsersResponse.class) {
-			response = ((MsgAllUsersResponse) payload).getUsers();
-		}
+			Object payload = message.getPayload();
+			Object value = null;
 
-		if (message.getMessageType() == MsgUserResponse.class) {
-			response = ((MsgUserResponse) payload).getUser();
-		}
+			if (payload instanceof Response) {
+				value = ((Response) payload).getValue();
+			}
 
-		if (message.getMessageType() == MsgSaveUserResponse.class) {
-			response = ((MsgSaveUserResponse) payload).getUser();
-		}
-
-		if (message.getMessageType() == MsgDeleteUserResponse.class) {
-			response = ((MsgDeleteUserResponse) payload).getMessage();
-		}
-
-		MessageEventListener listener = removeListener(message.getMessageType().getName());
-		if (listener != null) {
-			listener.messageReceived(new MessageEvent(message, response));
+			for (MessageEventListener listener : removeListeners(message.getMessageType().getName())) {
+				listener.messageReceived(new MessageEvent(message, value));
+			}
 		}
 	}
 
@@ -125,11 +110,15 @@ public class UIServiceImpl implements UIService {
 	}
 
 	private void addListener(String event, MessageEventListener listener) {
-		listeners.put(event, listener);
+
+		if (!listeners.containsKey(event)) {
+			listeners.put(event, new ArrayList<>());
+		}
+
+		listeners.get(event).add(listener);
 	}
 
-	private MessageEventListener removeListener(String event) {
+	private List<MessageEventListener> removeListeners(String event) {
 		return listeners.remove(event);
 	}
-
 }

@@ -1,8 +1,8 @@
-package ru.otus.l161.messages;
+package ru.otus.l161.dbmessages;
 
 import java.util.Map;
 
-public class MsgCacheParametersResponse {
+public class MsgCacheParametersResponse extends Response {
 
 	private final Map<String, String> cacheParameters;
 
@@ -12,5 +12,10 @@ public class MsgCacheParametersResponse {
 
 	public Map<String, String> getCacheParametes() {
 		return cacheParameters;
+	}
+
+	@Override
+	public Object getValue() {
+		return getCacheParametes();
 	}
 }

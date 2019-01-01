@@ -1,8 +1,8 @@
-package ru.otus.l161.messages;
+package ru.otus.l161.dbmessages;
 
 import ru.otus.l161.dataset.UserDataSet;
 
-public class MsgUserResponse {
+public class MsgUserResponse extends Response {
 
 	private final UserDataSet user;
 
@@ -14,4 +14,8 @@ public class MsgUserResponse {
 		return user;
 	}
 
+	@Override
+	public Object getValue() {
+		return getUser();
+	}
 }

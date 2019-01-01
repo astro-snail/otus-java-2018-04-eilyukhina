@@ -1,10 +1,10 @@
-package ru.otus.l161.messages;
+package ru.otus.l161.dbmessages;
 
 import java.util.List;
 
 import ru.otus.l161.dataset.UserDataSet;
 
-public class MsgAllUsersResponse {
+public class MsgAllUsersResponse extends Response {
 
 	private final List<UserDataSet> users;
 
@@ -16,4 +16,8 @@ public class MsgAllUsersResponse {
 		return users;
 	}
 
+	@Override
+	public Object getValue() {
+		return getUsers();
+	}
 }
