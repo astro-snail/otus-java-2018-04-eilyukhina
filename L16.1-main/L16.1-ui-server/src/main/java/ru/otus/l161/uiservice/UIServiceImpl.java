@@ -8,13 +8,13 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Logger;
 
 import ru.otus.l161.channel.SocketMessageWorker;
-import ru.otus.l161.dbmessages.Request;
-import ru.otus.l161.dbmessages.Response;
 import ru.otus.l161.message.Address;
 import ru.otus.l161.message.Message;
 import ru.otus.l161.message.MessageEvent;
 import ru.otus.l161.message.MessageEventListener;
 import ru.otus.l161.message.app.MsgShutdown;
+import ru.otus.l161.messages.Request;
+import ru.otus.l161.messages.Response;
 
 public class UIServiceImpl implements UIService {
 

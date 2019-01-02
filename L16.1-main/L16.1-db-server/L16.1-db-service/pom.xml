@@ -15,12 +15,6 @@
 	<dependencies>
 		<dependency>
 			<groupId>ru.otus</groupId>
-			<artifactId>L16.1-db-dataset</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
-			<groupId>ru.otus</groupId>
 			<artifactId>L16.1-db-client</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>

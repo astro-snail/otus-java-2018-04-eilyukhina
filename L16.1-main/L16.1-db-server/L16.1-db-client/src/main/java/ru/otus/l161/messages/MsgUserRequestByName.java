@@ -1,8 +1,6 @@
-package ru.otus.l161.dbmessages;
+package ru.otus.l161.messages;
 
-import java.sql.SQLException;
-
-import ru.otus.l161.dbservice.DBService;
+import ru.otus.l161.handler.RequestHandler;
 
 public class MsgUserRequestByName extends Request {
 
@@ -17,8 +15,8 @@ public class MsgUserRequestByName extends Request {
 	}
 
 	@Override
-	public Response execute(DBService dbService) throws SQLException {
-		return new MsgUserResponse(dbService.loadByName(name));
+	public Response execute(RequestHandler handler) {
+		return new MsgUserResponse(handler.getUserByName(name));
 	}
 
 	@Override

@@ -12,14 +12,6 @@
 	<artifactId>L16.1-db-client</artifactId>
 	<name>L16.1-db-client</name>
 
-	<dependencies>
-		<dependency>
-			<groupId>ru.otus</groupId>
-			<artifactId>L16.1-db-dataset</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-	</dependencies>
-
 	<build>
 		<finalName>db-client</finalName>
 		<plugins>

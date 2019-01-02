@@ -1,4 +1,4 @@
-package ru.otus.l161.dbmessages;
+package ru.otus.l161.messages;
 
 public class MsgDeleteUserResponse extends Response {
 

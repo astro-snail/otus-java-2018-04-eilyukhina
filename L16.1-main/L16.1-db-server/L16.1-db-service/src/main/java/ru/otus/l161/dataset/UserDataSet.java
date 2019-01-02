@@ -1,6 +1,5 @@
 package ru.otus.l161.dataset;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,9 +13,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "users")
-public class UserDataSet extends DataSet implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class UserDataSet extends DataSet {
 
 	private String name;
 	private int age;

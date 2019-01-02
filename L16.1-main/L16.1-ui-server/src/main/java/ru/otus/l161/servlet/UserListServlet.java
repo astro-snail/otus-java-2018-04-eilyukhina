@@ -11,9 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import ru.otus.l161.dbmessages.MsgAllUsersRequest;
 import ru.otus.l161.message.MessageEvent;
 import ru.otus.l161.message.MessageEventListener;
+import ru.otus.l161.messages.MsgAllUsersRequest;
 import ru.otus.l161.uiservice.UIService;
 
 @SuppressWarnings("serial")

@@ -21,7 +21,6 @@
 	</properties>
 
 	<modules>
-		<module>L16.1-db-dataset</module>
 		<module>L16.1-db-service</module>
 		<module>L16.1-db-client</module>
 	</modules>

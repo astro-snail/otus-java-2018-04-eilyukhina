@@ -1,7 +1,5 @@
 package ru.otus.l161.dataset;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,12 +9,10 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "phones")
-public class PhoneDataSet extends DataSet implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class PhoneDataSet extends DataSet {
 
 	private String number;
-	private transient UserDataSet user;
+	private UserDataSet user;
 
 	public PhoneDataSet() {
 		super();

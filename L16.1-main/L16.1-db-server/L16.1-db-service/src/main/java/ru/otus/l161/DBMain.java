@@ -1,6 +1,7 @@
 package ru.otus.l161;
 
-import ru.otus.l161.dbservice.RequestHandler;
+import ru.otus.l161.dbservice.RequestHandlerImpl;
+import ru.otus.l161.handler.RequestHandler;
 
 public class DBMain {
 
@@ -9,7 +10,7 @@ public class DBMain {
 	}
 
 	public void start() throws Exception {
-		RequestHandler handler = new RequestHandler();
+		RequestHandler handler = new RequestHandlerImpl();
 		handler.init();
 	}
 }

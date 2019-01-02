@@ -14,8 +14,10 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import ru.otus.l161.message.MessageEvent;
 import ru.otus.l161.message.MessageEventListener;
-import ru.otus.l161.dataset.*;
-import ru.otus.l161.dbmessages.*;
+import ru.otus.l161.messages.*;
+import ru.otus.l161.model.Address;
+import ru.otus.l161.model.Phone;
+import ru.otus.l161.model.User;
 import ru.otus.l161.uiservice.Operation;
 import ru.otus.l161.uiservice.UIService;
 
@@ -68,7 +70,7 @@ public class UserInfoServlet extends HttpServlet {
 			throws ServletException, IOException {
 		if (LoginServlet.checkLoggedIn(request, response)) {
 
-			UserDataSet user = UserHelper.getUser(request.getParameterMap());
+			User user = UserHelper.getUser(request.getParameterMap());
 
 			AsyncContext asyncContext = request.startAsync(request, response);
 
@@ -98,21 +100,21 @@ public class UserInfoServlet extends HttpServlet {
 
 class UserHelper {
 
-	static UserDataSet getUser(Map<String, String[]> parameters) {
+	static User getUser(Map<String, String[]> parameters) {
 		Long userId = getId(parameters.get("userId")[0]);
 		String name = parameters.get("name")[0];
 		int age = Integer.parseInt(parameters.get("age")[0]);
-		UserDataSet user = new UserDataSet(userId, name, age);
+		User user = new User(userId, name, age);
 
 		Long addressId = getId(parameters.get("addressId")[0]);
 		String street = parameters.get("address")[0];
-		user.setAddress(new AddressDataSet(addressId, street));
+		user.setAddress(new Address(addressId, street));
 
 		String[] phoneIds = parameters.get("phoneId");
 		String[] phoneNumbers = parameters.get("phone");
 
 		for (int i = 0; i < phoneNumbers.length; i++) {
-			user.addPhone(new PhoneDataSet(getId(phoneIds[i]), phoneNumbers[i]));
+			user.addPhone(new Phone(getId(phoneIds[i]), phoneNumbers[i]));
 		}
 
 		return user;
@@ -122,10 +124,10 @@ class UserHelper {
 		return parameter == null || parameter.isEmpty() ? null : Long.valueOf(parameter);
 	}
 
-	static UserDataSet createUser() {
-		UserDataSet user = new UserDataSet();
-		user.setAddress(new AddressDataSet());
-		user.addPhone(new PhoneDataSet());
+	static User createUser() {
+		User user = new User();
+		user.setAddress(new Address());
+		user.addPhone(new Phone());
 		return user;
 	}
 }

@@ -32,7 +32,7 @@ public class SocketMessageServer implements SocketMessageServerMBean {
 	public SocketMessageServer() {
 		this(null, null);
 	}
-	
+
 	public SocketMessageServer(Runnable onStartup, Runnable onShutdown) {
 		this.server = Executors.newFixedThreadPool(2);
 		this.workers = new ConcurrentHashMap<>();
@@ -48,10 +48,10 @@ public class SocketMessageServer implements SocketMessageServerMBean {
 
 			server.execute(this::routeMessages);
 			server.execute(this::acceptClients);
-			
+
 			if (onStartup != null) {
 				onStartup.run();
-			}	
+			}
 
 		} catch (IOException e) {
 			logger.severe(e.getMessage());
@@ -125,9 +125,9 @@ public class SocketMessageServer implements SocketMessageServerMBean {
 	}
 
 	private void shutdown() {
-		broadcastMessage(new Message(null, null, new MsgShutdown()));		
+		broadcastMessage(new Message(null, null, new MsgShutdown()));
 		server.shutdown();
-		
+
 		if (onShutdown != null) {
 			onShutdown.run();
 		}
